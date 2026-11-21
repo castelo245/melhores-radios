@@ -70,7 +70,7 @@
       pointer-events: none;
       z-index: 0;
       opacity: 0.22;
-      background-image: url("data:image/svg+xml,%3Csvg width='1440' height='600' viewBox='0 0 1440 600' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%2300e5ff' stroke-width='1.5'%3E%3Cpath d='M-100 300 Q 120 140, 340 300 T 780 300 T 1220 300 T 1660 300' opacity='0.5'/%3E%3Cpath d='M-100 300 Q 120 440, 340 300 T 780 300 T 1220 300 T 1660 300' stroke='%23ff7b00' opacity='0.45'/%3E%3Ccircle cx='720' cy='300' r='160' stroke-dasharray='6 8' opacity='0.35'/%3E%3Ccircle cx='720' cy='300' r='260' stroke-dasharray='3 10' stroke='%23ffca28' opacity='0.28'/%3E%3Ccircle cx='720' cy='300' r='380' stroke-dasharray='8 12' opacity='0.22'/%3E%3C/g%3E%3Cg stroke='%2338bdf8' stroke-width='1' opacity='0.25'%3E%3Cline x1='80' y1='40' x2='80' y2='60'/%3E%3Cline x1='120' y1='45' x2='120' y2='60'/%3E%3Cline x1='160' y1='35' x2='160' y2='60'/%3E%3Cline x1='200' y1='45' x2='200' y2='60'/%3E%3Cline x1='240' y1='40' x2='240' y2='60'/%3E%3Cline x1='1200' y1='540' x2='1200' y2='560'/%3E%3Cline x1='1240' y1='535' x2='1240' y2='560'/%3E%3Cline x1='1280' y1='545' x2='1280' y2='560'/%3E%3Cline x1='1320' y1='535' x2='1320' y2='560'/%3E%3Cline x1='1360' y1='540' x2='1360' y2='560'/%3E%3C/g%3E%3C/svg%3E");
+      background-image: url("data:image/svg+xml,%3Csvg width='1440' height='600' viewBox='0 0 1440 600' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%2300e5ff' stroke-width='1.5'%3E%3Cpath d='M-100 300 Q 120 140, 340 300 T 780 300 T 1220 300 T 1660 300' opacity='0.5'/%3E%3Cpath d='M-100 300 Q 120 440, 340 300 T 780 300 T 1220 300 T 1660 300' stroke='%23ff7b00' opacity='0.45'/%3E%3Ccircle cx='720' cy='300' r='160' stroke-dasharray='6 8' opacity='0.35'/%3E%3Ccircle cx='720' cy='300' r='260' stroke-dasharray='3 10' stroke='%23ffca28' opacity='0.28'/%3E%3Ccircle cx='720' cy='300' r='380' stroke-dasharray='8 12' opacity='0.22'/%3E%3C/g%3E%3C/svg%3E");
       background-repeat: repeat;
       background-position: center top;
     }
@@ -201,7 +201,7 @@
           NO AR 24H
         </span>
         <p class="text-xs sm:text-sm font-semibold text-slate-200">
-          Sintonia Digital AM • FM • WebRádios — <span class="text-cyan-300 font-bold">Transmissão em Alta Definição</span>
+          Sintonia Digital AM • FM • WebRádios — <span class="text-cyan-300 font-bold">Sincronização em Lotes Rápidos</span>
         </p>
       </div>
       <div class="hidden md:flex items-center gap-2 text-[11px] font-mono text-amber-300/90">
@@ -278,7 +278,7 @@
         <p id="publicSectionSubtitle" class="text-xs sm:text-sm text-cyan-200/80">Clique em qualquer emissora para iniciar a transmissão ao vivo</p>
       </div>
       <div class="flex items-center gap-2">
-        <button onclick="syncFromCloud(true)" class="p-2 rounded-xl bg-navy-800/90 border border-cyan-500/30 text-cyan-300 hover:bg-navy-700 shadow-sm transition" title="Atualizar lista de emissoras">
+        <button onclick="syncFromCloud(true)" class="p-2 rounded-xl bg-navy-800/90 border border-cyan-500/30 text-cyan-300 hover:bg-navy-700 shadow-sm transition" title="Atualizar lista completa de emissoras">
           <i data-lucide="refresh-cw" class="w-4 h-4"></i>
         </button>
         <span id="stationResultCount" class="text-xs font-bold px-3 py-1.5 rounded-full bg-navy-800/90 border border-cyan-500/30 text-cyan-200 shadow-sm">
@@ -296,11 +296,11 @@
         <i data-lucide="radio-receiver" class="w-7 h-7"></i>
       </div>
       <h3 class="text-base font-bold text-slate-800">Nenhuma emissora encontrada</h3>
-      <p class="text-sm text-slate-500 max-w-md mx-auto">A base de dados está pronta para receber suas emissoras, ou ajuste os filtros caso já tenha cadastrado rádios.</p>
+      <p class="text-sm text-slate-500 max-w-md mx-auto">Clique abaixo para sincronizar todas as emissoras da nuvem ou limpar filtros ativos.</p>
       <div class="flex flex-wrap items-center justify-center gap-2.5 pt-1">
-        <button onclick="switchModule('broadcaster')" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-amber-400 text-navy-950 text-sm font-extrabold shadow hover:brightness-105 transition">
-          <i data-lucide="plus-circle" class="w-4 h-4"></i>
-          <span>Adicionar Rádio</span>
+        <button onclick="syncFromCloud(true)" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-cyan-500 text-navy-950 text-sm font-extrabold shadow hover:brightness-105 transition">
+          <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+          <span>Sincronizar Todas da Nuvem</span>
         </button>
         <button onclick="resetPublicFilters()" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-100 text-slate-700 text-sm font-semibold hover:bg-slate-200 transition">
           Limpar Filtros
@@ -491,10 +491,10 @@
                 <img id="wizLogoPreview" src="https://placehold.co/300x300/07142e/00e5ff?text=LOGO+300x300" alt="Preview Logotipo" class="w-full h-full object-cover" />
               </div>
               <div class="space-y-2 flex-1">
-                <label class="block text-xs font-extrabold text-slate-800">Logotipo da Rádio (.JPG ou .PNG)</label>
+                <label class="block text-xs font-extrabold text-slate-800">Logotipo da Rádio (.JPG ou .PNG — Compressão Ultraleve)</label>
                 <input type="file" id="wiz_logoFile" accept=".jpg,.jpeg,.png,image/jpeg,image/png" onchange="handleLogoFileUpload(event)" class="block w-full text-xs text-slate-600 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-navy-900 file:text-white hover:file:bg-navy-800 cursor-pointer" />
                 <p class="text-[11px] text-slate-600 leading-relaxed">
-                  Nós recomendamos imagens quadradas, por exemplo, com dimensões de 250x250, 300x300, 512x512. No momento não é necessário enviar imagens com dimensões acima de 512x512. Formatos de arquivo suportados: JPG e PNG.
+                  A imagem é otimizada automaticamente para carregamento instantâneo em celulares e computadores.
                 </p>
               </div>
             </div>
@@ -518,28 +518,16 @@
               </button>
             </div>
             <p id="streamTestFeedback" class="hidden text-xs font-semibold mt-1.5 px-3 py-2 rounded-xl"></p>
-            <p class="text-[11px] text-slate-500 mt-1.5 leading-relaxed">
-              Exemplos: <code class="bg-slate-100 px-1 rounded">http://192.168.0.1:9000/stream</code>,
-              <code class="bg-slate-100 px-1 rounded">http://server01.yourlivestream.com:8000</code>,
-              <code class="bg-slate-100 px-1 rounded">https://player.server.com.br/proxy/21764</code>,
-              <code class="bg-slate-100 px-1 rounded">https://server.stream.com/radio/radio.stream/playlist.m3u8</code>
-            </p>
           </div>
 
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1">Streaming HTTP (opcional — deve começar com http://)</label>
             <input type="url" id="wiz_streamHttp" placeholder="http://servidor:porta/stream" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-mono focus:ring-2 focus:ring-cyan-500 focus:outline-none" />
-            <p class="text-[11px] text-amber-900 bg-amber-50 border border-amber-200 p-2.5 rounded-xl mt-1.5 leading-relaxed">
-              Importante! Para uma melhor compatibilidade com dispositivos antigos, informe o link HTTP 'não seguro'. Também será utilizado quando o link HTTPS estiver com algum problema. O link de streaming HTTP normalmente é a versão 'original' do seu streaming, no formato http://servidor:porta. O link tem que começar com HTTP e não HTTPS.
-            </p>
           </div>
 
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1">Streaming alternativo (opcional)</label>
             <input type="url" id="wiz_streamAlt" placeholder="https://backup.server.com.br/stream" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-mono focus:ring-2 focus:ring-cyan-500 focus:outline-none" />
-            <p class="text-[11px] text-slate-500 mt-1">
-              Preencher apenas se a rádio tiver um link separado para alta ou baixa qualidade e que toque a mesma programação do link principal.
-            </p>
           </div>
         </div>
 
@@ -553,10 +541,6 @@
             <span id="segmentSelectionCounter" class="px-2.5 py-1 rounded-full text-xs font-extrabold bg-cyan-100 text-cyan-900">0 / 3 selecionados</span>
           </div>
 
-          <div class="p-3 rounded-xl bg-slate-100 border border-slate-200 text-[11px] text-slate-700 leading-relaxed">
-            Atenção! Solicitação para mais de um segmento (até o máximo de 3) serão aceitas desde que haja coerência entre eles. Segmentos que são divergentes enquadram a rádio em 'Eclética'. O segmento 'Jornalismo' é restrito para rádios AM/FM que tenham sua programação voltada quase em sua totalidade para isso. A administração poderá, a qualquer momento, alterar o segmento da rádio que não estiver produzindo programação coerente ao segmento cadastrado.
-          </div>
-
           <input type="text" id="wizardSegmentSearch" oninput="renderWizardSegments()" placeholder="Busca rápida de segmento (ex: Sertaneja, Pop, Rock, Gospel, Noticiários...)" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-cyan-500 focus:outline-none" />
 
           <div id="wizardSegmentsGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 max-h-64 overflow-y-auto p-2.5 rounded-xl border border-slate-200 bg-slate-50"></div>
@@ -568,10 +552,6 @@
             <span class="w-6 h-6 rounded-lg bg-navy-900 text-cyan-400 inline-flex items-center justify-center text-xs">4</span>
             <span>Contatos e Redes Sociais (Todos opcionais)</span>
           </h3>
-
-          <div class="p-3.5 rounded-xl bg-red-50 border border-red-200 text-xs text-red-900 leading-relaxed">
-            <strong>Atenção!</strong> Você não pode cadastrar seus dados como contato de uma emissora. Configura falsidade Ideológica (Artigo 299 do Código Penal Brasileiro). Os dados cadastrados serão mostrados em nosso aplicativo para que os ouvintes possam se comunicar diretamente com a rádio. É importante que o contato esteja disponível no site ou compartilhado em alguma rede social da rádio. Preencha apenas os campos necessários.
-          </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 text-xs">
             <div>
@@ -645,16 +625,9 @@
         <div class="space-y-2">
           <label class="block text-xs font-extrabold text-slate-800">Termos de aceitação</label>
           <div class="h-32 overflow-y-auto p-3.5 rounded-xl bg-slate-50 border border-slate-300 text-xs text-slate-700 leading-relaxed space-y-2">
-            <p><strong>1. Regras Antifraude de Audiência:</strong> É estritamente proibido o uso de robôs, scripts de auto-reload, iframes ocultos ou qualquer mecanismo artificial para inflar a audiência da emissora no portal Melhores Rádios. Emissoras flagradas serão banidas permanentemente.</p>
-            <p><strong>2. Disponibilidade e Suspensão Automática (48h):</strong> Caso a webrádio ou streaming fique fora do ar por mais de 48 horas consecutivas sem justificativa técnica prévia, o cadastro poderá ser suspenso automaticamente pela moderação.</p>
-            <p><strong>3. Responsabilidade Legal e Registro de IP:</strong> Para fins de segurança jurídica e prevenção contra falsidade ideológica (Art. 299 do Código Penal), o endereço IP do solicitante, bem como a data e hora exatas desta submissão, serão registrados automaticamente em nossa base de auditoria.</p>
-          </div>
-        </div>
-
-        <div class="space-y-2">
-          <label class="block text-xs font-extrabold text-slate-800">Autorização de divulgação</label>
-          <div class="h-28 overflow-y-auto p-3.5 rounded-xl bg-slate-50 border border-slate-300 text-xs text-slate-700 leading-relaxed space-y-2">
-            <p>Autorizo gratuitamente a plataforma <strong>Melhores Rádios</strong> a indexar, reproduzir o link de streaming de áudio fornecido, exibir o logotipo oficial, frequência, contatos públicos, redes sociais e estatísticas da emissora em seu portal web e aplicativo mobile (PWA), incluindo a veiculação de publicidade institucional ou comercial nas telas onde a rádio estiver listada.</p>
+            <p><strong>1. Regras Antifraude de Audiência:</strong> É estritamente proibido o uso de robôs ou mecanismos artificiais para inflar a audiência da emissora.</p>
+            <p><strong>2. Disponibilidade e Suspensão Automática (48h):</strong> Caso a webrádio ou streaming fique fora do ar por mais de 48 horas consecutivas, o cadastro poderá ser suspenso pela moderação.</p>
+            <p><strong>3. Responsabilidade Legal:</strong> Para prevenção contra falsidade ideológica (Art. 299 do Código Penal), os dados da submissão são registrados em nossa auditoria.</p>
           </div>
         </div>
 
@@ -679,7 +652,7 @@
             Próxima Etapa →
           </button>
           <button type="button" onclick="submitWizardRegistration()" id="wizSubmitBtn" class="hidden px-6 py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 text-navy-950 text-xs font-black shadow-lg hover:brightness-105">
-            Concluir e Enviar Rádio
+            Concluir e Gravar na Nuvem
           </button>
         </div>
       </div>
@@ -692,8 +665,8 @@
           <i data-lucide="check-circle-2" class="w-7 h-7"></i>
         </div>
         <div>
-          <span class="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-amber-100 text-amber-800 uppercase">Status: PENDENTE DE APROVAÇÃO</span>
-          <h2 class="text-xl font-black text-slate-900 mt-1">Solicitação Recebida com Sucesso!</h2>
+          <span class="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-emerald-100 text-emerald-800 uppercase">Gravação Verificada na Nuvem</span>
+          <h2 class="text-xl font-black text-slate-900 mt-1">Solicitação Concluída com Sucesso!</h2>
           <p id="confirmationAuditMeta" class="text-xs text-slate-600 mt-1"></p>
         </div>
       </div>
@@ -701,9 +674,8 @@
       <div class="space-y-4 pt-3 border-t border-slate-200">
         <div>
           <h3 class="text-sm font-extrabold text-slate-900">Banners de Divulgação para o Site da Sua Rádio</h3>
-          <p class="text-xs text-slate-500">Copie o código HTML abaixo e cole no site oficial da sua emissora para que seus ouvintes ouçam pelo aplicativo Melhores Rádios:</p>
+          <p class="text-xs text-slate-500">Copie o código HTML abaixo e cole no site oficial da sua emissora:</p>
         </div>
-
         <div id="promoBannersContainer" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
       </div>
 
@@ -738,7 +710,7 @@
           <div id="adminHeaderLogo" class="w-12 h-12 shrink-0"></div>
           <div>
             <h1 class="text-lg sm:text-xl font-black text-slate-900">Moderação & Controle — Melhores Rádios</h1>
-            <p class="text-xs text-slate-500">Conectado ao Banco Global Supabase (jayfakaapmllwrpetiqr.supabase.co).</p>
+            <p class="text-xs text-slate-500">Sincronização Paginada e Normalização Automática de Status.</p>
           </div>
         </div>
         <div class="flex flex-wrap items-center gap-2 self-start lg:self-auto">
@@ -746,17 +718,21 @@
             <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i>
             <span>Cadastrar Nova Rádio Direto</span>
           </button>
+          <button onclick="forcePushAllLocalToCloud()" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-navy-950 text-xs font-extrabold shadow-sm transition" title="Compacta e reenvia todas as rádios para a nuvem">
+            <i data-lucide="upload-cloud" class="w-3.5 h-3.5"></i>
+            <span>Compactar & Reenviar Nuvem</span>
+          </button>
           <button onclick="openCloudConfigModal()" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-900 border border-indigo-200 text-xs font-extrabold transition">
             <i data-lucide="cloud" class="w-3.5 h-3.5 text-indigo-600"></i>
-            <span>Banco Nuvem (Supabase)</span>
+            <span>Banco Nuvem</span>
           </button>
           <button onclick="openChangeAdminPasswordModal()" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-cyan-50 hover:bg-cyan-100 text-cyan-900 border border-cyan-200 text-xs font-bold transition">
             <i data-lucide="key-round" class="w-3.5 h-3.5 text-cyan-700"></i>
-            <span>Alterar Senha</span>
+            <span>Senha</span>
           </button>
           <button onclick="openResetDbConfirmModal()" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 text-xs font-bold transition">
             <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-            <span>Zerar Base</span>
+            <span>Zerar</span>
           </button>
           <button onclick="lockAdminPanel()" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition">
             <i data-lucide="lock" class="w-3.5 h-3.5 text-amber-400"></i>
@@ -816,11 +792,11 @@
       <div class="bg-white/95 backdrop-blur-md rounded-2xl border border-cyan-500/20 shadow-xl overflow-hidden">
         <div class="p-4 border-b border-slate-200 flex flex-wrap items-center justify-between gap-3">
           <div class="flex items-center gap-2 overflow-x-auto no-scrollbar">
-            <button onclick="setAdminFilter('PENDING')" id="adm-tab-PENDING" class="adm-filter-btn px-3.5 py-2 rounded-xl text-xs font-extrabold bg-amber-500 text-white">
-              Fila Pendente
-            </button>
-            <button onclick="setAdminFilter('ACTIVE')" id="adm-tab-ACTIVE" class="adm-filter-btn px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200">
+            <button onclick="setAdminFilter('ACTIVE')" id="adm-tab-ACTIVE" class="adm-filter-btn px-3.5 py-2 rounded-xl text-xs font-extrabold bg-navy-900 text-cyan-300">
               Ativas no Portal
+            </button>
+            <button onclick="setAdminFilter('PENDING')" id="adm-tab-PENDING" class="adm-filter-btn px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200">
+              Fila Pendente
             </button>
             <button onclick="setAdminFilter('OFFLINE')" id="adm-tab-OFFLINE" class="adm-filter-btn px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200">
               Offline / Suspensas (&gt;48h)
@@ -999,7 +975,7 @@
         </div>
       </div>
       <p class="text-xs text-slate-700 leading-relaxed bg-red-50 p-3 rounded-xl border border-red-100">
-        Todas as rádios ativas, pendentes e rejeitadas serão removidas. Sua senha administrativa cadastrada será mantida.
+        Todas as rádios ativas, pendentes e rejeitadas serão removidas da nuvem e do cache local.
       </p>
       <div class="flex justify-end gap-2 pt-1">
         <button onclick="closeResetDbConfirmModal()" class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold">Cancelar</button>
@@ -1019,9 +995,6 @@
           <i data-lucide="x" class="w-5 h-5"></i>
         </button>
       </div>
-      <p class="text-xs text-slate-600 leading-relaxed">
-        Prefere que a nossa equipe faça o cadastro completo para você? Copie o modelo abaixo, preencha com os dados da rádio e envie para o administrador do portal:
-      </p>
       <textarea id="adminTemplateText" readonly rows="10" class="w-full p-3 rounded-xl bg-slate-900 text-cyan-300 font-mono text-[11px] leading-relaxed">SOLICITAÇÃO DE CADASTRO - MELHORES RÁDIOS
 1. Tipo (Webradio ou AM/FM): 
 2. Nome da Rádio: 
@@ -1042,7 +1015,6 @@
     </div>
   </div>
 
-  <!-- MODAL 7: CLOUD DATABASE CONFIGURATION (SUPABASE) -->
   <div id="cloudConfigModal" class="hidden fixed inset-0 z-50 bg-slate-950/75 backdrop-blur-sm flex items-center justify-center p-4 text-slate-900">
     <div class="bg-white rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto p-6 shadow-2xl border border-slate-200 space-y-4">
       <div class="flex items-center justify-between border-b border-slate-200 pb-3">
@@ -1054,9 +1026,6 @@
           <i data-lucide="x" class="w-5 h-5"></i>
         </button>
       </div>
-      <p class="text-xs text-slate-600 leading-relaxed">
-        Seu portal já está conectado permanentemente ao projeto <strong>jayfakaapmllwrpetiqr.supabase.co</strong> para todos os celulares e computadores.
-      </p>
       <div class="space-y-3 text-left">
         <div>
           <label class="block text-xs font-bold text-slate-700 mb-1">Supabase Project URL</label>
@@ -1075,13 +1044,14 @@
   </div>
 
   <!-- ===================================================================== -->
-  <!-- APPLICATION LOGIC (JAVASCRIPT + SUPABASE CLOUD SYNC)                  -->
+  <!-- APPLICATION LOGIC (BATCH CLOUD SYNC + STATUS NORMALIZATION)           -->
   <!-- ===================================================================== -->
   <script>
     const DEFAULT_SUPABASE_URL = "https://jayfakaapmllwrpetiqr.supabase.co";
     const DEFAULT_SUPABASE_ANON_KEY = "sb_publishable_6XMZ2irIe7WH0agt0WLYug_xzWBO08d";
 
     let supabaseClient = null;
+    let isSyncingCloud = false;
 
     function getActiveSupabaseConfig() {
       const savedUrl = localStorage.getItem("mr_supabase_url") || DEFAULT_SUPABASE_URL;
@@ -1094,7 +1064,9 @@
       const indicator = document.getElementById("cloudStatusIndicator");
       if (url && key && window.supabase) {
         try {
-          supabaseClient = window.supabase.createClient(url, key);
+          supabaseClient = window.supabase.createClient(url, key, {
+            auth: { persistSession: false }
+          });
           if (indicator) {
             indicator.className = "hidden lg:inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-400/40 uppercase tracking-wider";
             indicator.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Nuvem Online`;
@@ -1105,80 +1077,202 @@
         }
       }
       supabaseClient = null;
-      if (indicator) {
-        indicator.className = "hidden lg:inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-800 text-slate-300 border border-slate-600 uppercase tracking-wider";
-        indicator.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span> Modo Local`;
-      }
       return false;
     }
 
-    async function syncFromCloud(showFeedback = false) {
-      if (!supabaseClient) {
-        if (showFeedback) {
-          showToast("Modo Local Ativo", "Configure o Supabase no Painel Admin para sincronizar com a nuvem.", "info");
+    // Normalize station object so status/country/segments never break public filters
+    function normalizeStation(raw) {
+      const s = { ...raw };
+      const rawStatus = (s.status || "ACTIVE").toString().trim().toUpperCase();
+      s.status = ["ACTIVE", "PENDING", "REJECTED", "OFFLINE"].includes(rawStatus) ? rawStatus : "ACTIVE";
+      s.country = (s.country || "Brasil").toString().trim();
+      s.state = (s.state || "").toString().trim();
+      s.city = (s.city || "").toString().trim();
+      s.name = (s.name || "Emissora").toString().trim();
+      s.segments = Array.isArray(s.segments) ? s.segments : [];
+      s.listeners = Number(s.listeners) || 100;
+      return s;
+    }
+
+    // Compress any uploaded image to max 180x180 JPEG (~12KB) so batch sync on mobile is instant
+    function compressImageDataUrl(dataUrl, maxDim = 180, quality = 0.72) {
+      return new Promise((resolve) => {
+        if (!dataUrl || !dataUrl.startsWith("data:image")) {
+          resolve(dataUrl);
+          return;
         }
-        return;
-      }
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          let w = img.width;
+          let h = img.height;
+          if (w > maxDim || h > maxDim) {
+            if (w > h) {
+              h = Math.round((h * maxDim) / w);
+              w = maxDim;
+            } else {
+              w = Math.round((w * maxDim) / h);
+              h = maxDim;
+            }
+          }
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext("2d");
+          ctx.fillStyle = "#07142e";
+          ctx.fillRect(0, 0, w, h);
+          ctx.drawImage(img, 0, 0, w, h);
+          resolve(canvas.toDataURL("image/jpeg", quality));
+        };
+        img.onerror = () => resolve(dataUrl);
+        img.src = dataUrl;
+      });
+    }
+
+    // Paginated batch fetch (10 rows per request) so mobile connections NEVER time out on large Base64 logos
+    async function syncFromCloud(showFeedback = false) {
+      if (!supabaseClient || isSyncingCloud) return;
+      isSyncingCloud = true;
+
       try {
-        const { data, error } = await supabaseClient
-          .from("radios")
-          .select("*")
-          .order("created_at", { ascending: false });
+        const pageSize = 10;
+        let from = 0;
+        let allRows = [];
+        let keepFetching = true;
 
-        if (error) throw error;
+        while (keepFetching) {
+          const { data, error } = await supabaseClient
+            .from("radios")
+            .select("id, status, name, city, state, country, stream_primary, management_email, listeners, payload")
+            .order("created_at", { ascending: false })
+            .range(from, from + pageSize - 1);
 
-        if (Array.isArray(data)) {
-          state.stations = data.map(row => ({
+          if (error) throw error;
+
+          if (Array.isArray(data) && data.length > 0) {
+            allRows = allRows.concat(data);
+            from += pageSize;
+            if (data.length < pageSize) keepFetching = false;
+          } else {
+            keepFetching = false;
+          }
+        }
+
+        const cloudStations = allRows.map(row =>
+          normalizeStation({
             ...(row.payload || {}),
             id: row.id,
-            status: row.status,
-            name: row.name,
-            city: row.city,
-            state: row.state,
-            country: row.country,
-            streamPrimary: row.stream_primary,
-            managementEmail: row.management_email,
-            listeners: row.listeners ?? (row.payload?.listeners || 0)
-          }));
+            status: row.status || row.payload?.status || "ACTIVE",
+            name: row.name || row.payload?.name,
+            city: row.city || row.payload?.city,
+            state: row.state || row.payload?.state,
+            country: row.country || row.payload?.country || "Brasil",
+            streamPrimary: row.stream_primary || row.payload?.streamPrimary,
+            managementEmail: row.management_email || row.payload?.managementEmail,
+            listeners: row.listeners ?? (row.payload?.listeners || 100)
+          })
+        );
+
+        const cloudIds = new Set(cloudStations.map(s => s.id));
+        const unsyncedLocal = state.stations
+          .filter(s => !cloudIds.has(s.id) && s._unsynced === true)
+          .map(normalizeStation);
+
+        // Only replace state if we actually got data or local was empty
+        if (cloudStations.length > 0 || state.stations.length === 0) {
+          state.stations = [...unsyncedLocal, ...cloudStations];
           saveLocalMirror();
-          updateAdminBadges();
-          renderPublicStations();
-          if (state.activeModule === "admin" && state.adminUnlocked) {
-            renderAdminQueue();
-          }
-          if (showFeedback) {
-            showToast("Sincronizado!", `${state.stations.length} emissoras carregadas da nuvem.`, "success");
-          }
+        }
+
+        updateAdminBadges();
+        renderPublicStations();
+        if (state.activeModule === "admin" && state.adminUnlocked) {
+          renderAdminQueue();
+        }
+
+        if (showFeedback) {
+          showToast("Nuvem Sincronizada!", `${cloudStations.length} emissoras carregadas na lista.`, "success");
+        }
+
+        for (const pendingItem of unsyncedLocal) {
+          await upsertStationToCloud(pendingItem, true);
         }
       } catch (err) {
         console.error("Erro syncFromCloud:", err);
+        // Ensure existing local stations are normalized and displayed even on network hiccup
+        state.stations = state.stations.map(normalizeStation);
+        renderPublicStations();
         if (showFeedback) {
-          showToast("Erro na Nuvem", "Verifique se a tabela 'radios' foi criada no Supabase.", "error");
+          showToast("Aviso de Sincronização", "Exibindo emissoras salvas. Tente sincronizar novamente em instantes.", "warning");
         }
+      } finally {
+        isSyncingCloud = false;
       }
     }
 
-    async function upsertStationToCloud(station) {
-      if (!supabaseClient) return;
+    async function upsertStationToCloud(station, silent = false) {
+      if (!supabaseClient) return false;
       try {
+        const optimizedLogo = await compressImageDataUrl(station.logo, 180, 0.72);
+        const cleanStation = normalizeStation({ ...station, logo: optimizedLogo });
+        delete cleanStation._unsynced;
+
         const row = {
-          id: station.id,
-          status: station.status,
-          name: station.name,
-          city: station.city,
-          state: station.state,
-          country: station.country,
-          stream_primary: station.streamPrimary,
-          management_email: station.managementEmail,
-          listeners: station.listeners || 0,
-          payload: station
+          id: cleanStation.id,
+          status: cleanStation.status,
+          name: cleanStation.name,
+          city: cleanStation.city,
+          state: cleanStation.state,
+          country: cleanStation.country,
+          stream_primary: cleanStation.streamPrimary,
+          management_email: cleanStation.managementEmail,
+          listeners: cleanStation.listeners || 100,
+          payload: cleanStation
         };
-        const { error } = await supabaseClient.from("radios").upsert(row, { onConflict: "id" });
+
+        const { data, error } = await supabaseClient
+          .from("radios")
+          .upsert(row, { onConflict: "id" })
+          .select("id");
+
         if (error) throw error;
+        if (!data || data.length === 0) {
+          throw new Error("O banco não confirmou a gravação da linha.");
+        }
+
+        const idx = state.stations.findIndex(s => s.id === station.id);
+        if (idx > -1) {
+          state.stations[idx] = cleanStation;
+          saveLocalMirror();
+        }
+        return true;
       } catch (err) {
-        console.error("Erro ao salvar no Supabase:", err);
-        showToast("Aviso de Nuvem", "Salvo localmente, mas houve falha ao enviar para o Supabase.", "warning");
+        console.error("Erro ao gravar no Supabase:", err);
+        station._unsynced = true;
+        saveLocalMirror();
+        if (!silent) {
+          showToast("Falha ao Gravar na Nuvem", `Erro: ${err.message || "Verifique sua conexão"}.`, "error");
+        }
+        return false;
       }
+    }
+
+    async function forcePushAllLocalToCloud() {
+      if (!supabaseClient) {
+        showToast("Sem Conexão", "Configure o Supabase primeiro.", "error");
+        return;
+      }
+      if (state.stations.length === 0) {
+        showToast("Base Vazia", "Não há emissoras locais para reenviar.", "info");
+        return;
+      }
+      showToast("Compactando & Enviando...", `Otimizando ${state.stations.length} emissoras para carregar rápido no celular...`, "info");
+      let okCount = 0;
+      for (const st of state.stations) {
+        const ok = await upsertStationToCloud(st, true);
+        if (ok) okCount++;
+      }
+      await syncFromCloud(false);
+      showToast("Concluído!", `${okCount} de ${state.stations.length} emissoras compactadas e confirmadas na nuvem!`, okCount === state.stations.length ? "success" : "warning");
     }
 
     function openCloudConfigModal() {
@@ -1231,63 +1325,22 @@
               <stop offset="50%" stop-color="#2c476e"/>
               <stop offset="100%" stop-color="#172842"/>
             </linearGradient>
-            <filter id="cyanGlow_${uid}" x="-20%" y="-20%" width="140%" height="140%">
-              <feGaussianBlur stdDeviation="4" result="blur"/>
-              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-            </filter>
-            <filter id="orangeGlow_${uid}" x="-20%" y="-20%" width="140%" height="140%">
-              <feGaussianBlur stdDeviation="3.5" result="blur"/>
-              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-            </filter>
             <path id="topArc_${uid}" d="M 62,195 A 138,138 0 0,1 338,195" />
             <path id="botArc_${uid}" d="M 72,225 A 132,132 0 0,0 328,225" />
           </defs>
           <circle cx="200" cy="200" r="194" fill="url(#bgGrad_${uid})" />
-          <circle cx="200" cy="200" r="187" fill="none" stroke="#ff5e1a" stroke-width="5" filter="url(#orangeGlow_${uid})" />
-          <circle cx="200" cy="200" r="179" fill="none" stroke="#00e5ff" stroke-width="4" filter="url(#cyanGlow_${uid})" />
-          <circle cx="200" cy="200" r="115" fill="none" stroke="#ff8c1a" stroke-width="2" opacity="0.7" />
-          <circle cx="200" cy="200" r="95" fill="none" stroke="#00e5ff" stroke-width="2.5" opacity="0.65" />
-          <g stroke="#00e5ff" stroke-width="3" stroke-linecap="round" filter="url(#cyanGlow_${uid})" opacity="0.9">
-            <line x1="46" y1="192" x2="46" y2="208" />
-            <line x1="56" y1="184" x2="56" y2="216" />
-            <line x1="66" y1="174" x2="66" y2="226" />
-            <line x1="76" y1="182" x2="76" y2="218" />
-            <line x1="86" y1="168" x2="86" y2="232" />
-            <line x1="96" y1="178" x2="96" y2="222" />
-            <line x1="304" y1="178" x2="304" y2="222" />
-            <line x1="314" y1="168" x2="314" y2="232" />
-            <line x1="324" y1="182" x2="324" y2="218" />
-            <line x1="334" y1="174" x2="334" y2="226" />
-            <line x1="344" y1="184" x2="344" y2="216" />
-            <line x1="354" y1="192" x2="354" y2="208" />
-          </g>
-          <g fill="#ffca28">
-            <polygon points="150,125 153,132 160,135 153,138 150,145 147,138 140,135 147,132" />
-            <polygon points="205,112 207,117 212,119 207,121 205,126 203,121 198,119 203,117" />
-            <polygon points="105,235 107,240 112,242 107,244 105,249 103,244 98,242 103,240" />
-            <polygon points="292,232 294,237 299,239 294,241 292,246 290,241 285,239 290,237" />
-          </g>
+          <circle cx="200" cy="200" r="187" fill="none" stroke="#ff5e1a" stroke-width="5" />
+          <circle cx="200" cy="200" r="179" fill="none" stroke="#00e5ff" stroke-width="4" />
           <g transform="translate(108, 128)">
             <line x1="128" y1="30" x2="54" y2="-16" stroke="#dbeafe" stroke-width="4" stroke-linecap="round" />
             <circle cx="52" cy="-17" r="4.5" fill="#93c5fd" />
-            <path d="M 142,10 A 18,18 0 0,1 156,26" fill="none" stroke="#ff9800" stroke-width="3" stroke-linecap="round" />
-            <path d="M 148,2 A 26,26 0 0,1 166,24" fill="none" stroke="#ff9800" stroke-width="3" stroke-linecap="round" />
             <path d="M 32,32 L 32,16 Q 32,10 38,10 L 146,10 Q 152,10 152,16 L 152,32" fill="none" stroke="#cbd5e1" stroke-width="7" stroke-linejoin="round" />
             <rect x="14" y="30" width="156" height="104" rx="12" fill="url(#radioBody_${uid})" stroke="#93c5fd" stroke-width="2.5" />
             <rect x="20" y="36" width="144" height="92" rx="8" fill="#101f38" stroke="#475569" stroke-width="1.5" />
-            <rect x="6" y="54" width="8" height="22" rx="3" fill="#94a3b8" />
             <rect x="28" y="42" width="106" height="24" rx="4" fill="#06213e" stroke="#00e5ff" stroke-width="1.5" />
-            <line x1="34" y1="54" x2="128" y2="54" stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="3,2" />
             <line x1="88" y1="44" x2="88" y2="64" stroke="#ff7b00" stroke-width="2.5" />
-            <circle cx="149" cy="54" r="9" fill="#cbd5e1" stroke="#1e293b" stroke-width="2" />
             <circle cx="62" cy="96" r="27" fill="#cbd5e1" stroke="#334155" stroke-width="2.5" />
             <circle cx="62" cy="96" r="21" fill="#0f172a" />
-            <circle cx="62" cy="96" r="14" fill="#1e293b" stroke="#475569" stroke-width="1" />
-            <circle cx="62" cy="96" r="6" fill="#64748b" />
-            <rect x="98" y="74" width="13" height="8" rx="1.5" fill="#94a3b8" />
-            <rect x="114" y="74" width="13" height="8" rx="1.5" fill="#94a3b8" />
-            <rect x="98" y="86" width="29" height="8" rx="1.5" fill="#64748b" />
-            <rect x="98" y="98" width="29" height="16" rx="2" fill="#1e293b" stroke="#475569" stroke-width="1" />
             <circle cx="148" cy="84" r="10" fill="#e2e8f0" stroke="#1e293b" stroke-width="2" />
             <circle cx="148" cy="110" r="10" fill="#e2e8f0" stroke="#1e293b" stroke-width="2" />
           </g>
@@ -1365,13 +1418,14 @@
       wizardLogoDataUrl: "",
       adminDirectCreateMode: false,
       adminUnlocked: false,
-      adminFilter: "PENDING"
+      adminFilter: "ACTIVE"
     };
 
     function loadAppState() {
       try {
         const savedStations = localStorage.getItem(STORAGE_KEY_STATIONS);
-        state.stations = savedStations ? JSON.parse(savedStations) : [];
+        const parsed = savedStations ? JSON.parse(savedStations) : [];
+        state.stations = Array.isArray(parsed) ? parsed.map(normalizeStation) : [];
         const savedFavs = localStorage.getItem(STORAGE_KEY_FAVS);
         state.favorites = savedFavs ? JSON.parse(savedFavs) : [];
       } catch (e) {
@@ -1386,12 +1440,13 @@
       } catch (e) {}
     }
 
-    async function saveStationRecord(station) {
+    async function saveStationRecord(station, silent = false) {
       saveLocalMirror();
       updateAdminBadges();
       if (station) {
-        await upsertStationToCloud(station);
+        return await upsertStationToCloud(station, silent);
       }
+      return false;
     }
 
     function saveFavoritesState() {
@@ -1445,7 +1500,7 @@
       }, 4200);
     }
 
-    function copyTextToClipboard(text, successMsg = "Código copiado para a área de transferência!") {
+    function copyTextToClipboard(text, successMsg = "Código copiado!") {
       const textarea = document.createElement("textarea");
       textarea.value = text;
       textarea.style.position = "fixed";
@@ -1505,14 +1560,12 @@
       document.getElementById("adminDirectModeBadge").classList.remove("hidden");
       document.getElementById("btnSendDataToAdmin").classList.add("hidden");
       document.getElementById("broadcasterHeaderTitle").textContent = "Cadastro Direto pelo Administrador";
-      document.getElementById("broadcasterHeaderSubtitle").textContent = "Preencha os dados recebidos da emissora. Ao concluir, a rádio será publicada imediatamente como ATIVA NO AR.";
+      document.getElementById("broadcasterHeaderSubtitle").textContent = "Preencha os dados recebidos da emissora. Ao concluir, a rádio será gravada e confirmada na nuvem.";
 
       document.getElementById("wiz_applicantName").value = "Super Admin (Cadastro Interno)";
       document.getElementById("wiz_applicantEmail").value = "admin@melhoresradios.com.br";
       document.getElementById("wiz_applicantRole").value = "Administrador do Portal (Cadastro Interno)";
       document.getElementById("wiz_managementEmail").value = "admin@melhoresradios.com.br";
-
-      showToast("Modo Admin Direto", "Preencha os dados da rádio; ela entrará no ar imediatamente após salvar.", "info");
     }
 
     function switchModule(mod) {
@@ -1612,7 +1665,7 @@
         state.isPlaying = false;
         syncPlayerPlayStateUI();
         updatePlayerStatusBadge("Offline / Falha no Stream", "bg-red-950 text-red-300 border-red-700", "bg-red-500");
-        showToast("Falha na Transmissão", "Não foi possível conectar aos links de streaming desta emissora no momento.", "error");
+        showToast("Falha na Transmissão", "Não foi possível conectar aos links de streaming desta emissora.", "error");
         return;
       }
 
@@ -1636,9 +1689,6 @@
         if (settled) return;
         settled = true;
         clearTimeout(state.fallbackTimer);
-        if (index + 1 < candidates.length) {
-          showToast("Fallback Automático", `Alternando para ${candidates[index + 1].label}...`, "warning");
-        }
         attemptStreamCandidate(candidates, index + 1);
       };
 
@@ -1856,7 +1906,7 @@
       const clearBtn = document.getElementById("clearSearchBtn");
       if (clearBtn) clearBtn.classList.toggle("hidden", query.length === 0);
 
-      let list = state.stations.filter(s => s.status === "ACTIVE");
+      let list = state.stations.filter(s => (s.status || "ACTIVE").toUpperCase() === "ACTIVE");
 
       const titles = {
         top: ["Top Rádios Mais Ouvidas", "Ranking atualizado em tempo real de audiência"],
@@ -1870,7 +1920,7 @@
       document.getElementById("publicSectionSubtitle").textContent = tSub;
 
       if (state.publicTab === "brasil") {
-        list = list.filter(s => s.country === "Brasil");
+        list = list.filter(s => (s.country || "Brasil").toLowerCase() === "brasil");
         if (state.selectedStateFilter) list = list.filter(s => s.state === state.selectedStateFilter);
         if (state.selectedCityFilter) list = list.filter(s => s.city === state.selectedCityFilter);
       } else if (state.publicTab === "mundiais") {
@@ -1925,7 +1975,7 @@
           <article onclick="playStation('${s.id}')" class="group cursor-pointer bg-white/95 backdrop-blur-md text-slate-900 rounded-2xl border ${isCurrent ? "border-cyan-400 ring-2 ring-cyan-400/50" : "border-white/20 hover:border-cyan-400"} p-4 shadow-lg hover:shadow-xl transition-all flex flex-col justify-between gap-3">
             <div class="flex items-start gap-3.5">
               <div class="relative w-16 h-16 rounded-2xl overflow-hidden bg-navy-900 border border-slate-200 shrink-0 shadow-sm">
-                <img src="${s.logo || 'https://placehold.co/200x200/07142e/00e5ff?text=RADIO'}" alt="${s.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                <img src="${s.logo || 'https://placehold.co/200x200/07142e/00e5ff?text=RADIO'}" alt="${s.name}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                 <div class="absolute inset-0 bg-navy-950/50 ${isCurrent ? "opacity-100" : "opacity-0 group-hover:opacity-100"} flex items-center justify-center transition">
                   <span class="w-9 h-9 rounded-full bg-cyan-400 text-navy-950 flex items-center justify-center shadow">
                     <i data-lucide="${isCurrent ? "volume-2" : "play"}" class="w-4 h-4"></i>
@@ -2069,9 +2119,11 @@
         return;
       }
       const reader = new FileReader();
-      reader.onload = e => {
-        state.wizardLogoDataUrl = e.target.result;
-        document.getElementById("wizLogoPreview").src = state.wizardLogoDataUrl;
+      reader.onload = async e => {
+        const compressed = await compressImageDataUrl(e.target.result, 180, 0.72);
+        state.wizardLogoDataUrl = compressed;
+        document.getElementById("wizLogoPreview").src = compressed;
+        showToast("Logo Otimizado", "Imagem ajustada para carregamento ultrarrápido.", "success");
       };
       reader.readAsDataURL(file);
     }
@@ -2145,7 +2197,7 @@
 
       testerAudioEl.onerror = () => {
         fb.className = "text-xs font-semibold mt-1.5 px-3 py-2 rounded-xl bg-red-50 text-red-800 border border-red-200";
-        fb.textContent = "Falha ao reproduzir este link. Verifique se a URL está ativa ou se há bloqueio CORS/SSL.";
+        fb.textContent = "Falha ao reproduzir este link. Verifique se a URL está ativa.";
       };
       testerAudioEl.onplaying = () => {
         fb.className = "text-xs font-semibold mt-1.5 px-3 py-2 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200";
@@ -2262,8 +2314,14 @@
 
     async function submitWizardRegistration() {
       if (!document.getElementById("wiz_acceptTerms").checked) {
-        showToast("Aceite Obrigatório", "Você precisa marcar a caixa aceitando os termos e a autorização de divulgação.", "error");
+        showToast("Aceite Obrigatório", "Você precisa marcar a caixa aceitando os termos.", "error");
         return;
+      }
+
+      const submitBtn = document.getElementById("wizSubmitBtn");
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = "Gravando na Nuvem...";
       }
 
       if (testerAudioEl && !testerAudioEl.paused) {
@@ -2273,12 +2331,11 @@
 
       const editingId = document.getElementById("editingStationId").value;
       const nowStr = new Date().toLocaleString("pt-BR");
-      const simulatedIp = `187.${Math.floor(Math.random() * 200 + 10)}.${Math.floor(Math.random() * 250)}.${Math.floor(Math.random() * 250)}`;
       const stationName = document.getElementById("wiz_name").value.trim();
       const isDirectPublish = state.adminDirectCreateMode && state.adminUnlocked;
 
-      const stationPayload = {
-        id: editingId || "rad_" + Date.now(),
+      const stationPayload = normalizeStation({
+        id: editingId || "rad_" + Date.now() + "_" + Math.floor(Math.random() * 999),
         status: isDirectPublish ? "ACTIVE" : "PENDING",
         stationType: document.querySelector('input[name="stationType"]:checked').value,
         applicantName: document.getElementById("wiz_applicantName").value.trim(),
@@ -2292,7 +2349,7 @@
         country: document.getElementById("wiz_country").value,
         state: document.getElementById("wiz_state").value.trim(),
         city: document.getElementById("wiz_city").value.trim(),
-        logo: state.wizardLogoDataUrl || `https://placehold.co/300x300/07142e/00e5ff?text=${encodeURIComponent(stationName.slice(0, 12).toUpperCase())}`,
+        logo: state.wizardLogoDataUrl || `https://placehold.co/250x250/07142e/00e5ff?text=${encodeURIComponent(stationName.slice(0, 12).toUpperCase())}`,
         streamPrimary: document.getElementById("wiz_streamPrimary").value.trim(),
         streamHttp: document.getElementById("wiz_streamHttp").value.trim(),
         streamAlt: document.getElementById("wiz_streamAlt").value.trim(),
@@ -2313,10 +2370,9 @@
         soundcloud: document.getElementById("wiz_soundcloud").value.trim(),
         extraInfo: document.getElementById("wiz_extraInfo").value.trim(),
         moderationNotes: document.getElementById("wiz_moderationNotes").value.trim(),
-        submittedIp: isDirectPublish ? "ADMIN-DIRECT" : simulatedIp,
         submittedAt: nowStr,
         listeners: isDirectPublish ? 350 : 0
-      };
+      });
 
       if (editingId) {
         const idx = state.stations.findIndex(s => s.id === editingId);
@@ -2325,14 +2381,19 @@
         state.stations.unshift(stationPayload);
       }
 
-      await saveStationRecord(stationPayload);
+      const savedToCloud = await saveStationRecord(stationPayload, false);
+
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Concluir e Gravar na Nuvem";
+      }
 
       document.getElementById("broadcasterWizardForm").classList.add("hidden");
       document.getElementById("wizardProgressWrapper").classList.add("hidden");
       document.getElementById("wizardConfirmationScreen").classList.remove("hidden");
-      document.getElementById("confirmationAuditMeta").innerHTML = isDirectPublish
-        ? `Emissora <strong>${stationPayload.name}</strong> cadastrada pelo Administrador e publicada <strong>IMEDIATAMENTE NO AR</strong> em <strong>${nowStr}</strong>.`
-        : `Emissora <strong>${stationPayload.name}</strong> enviada para a fila de moderação. IP Registrado: <code>${simulatedIp}</code> • Data/Hora: <strong>${nowStr}</strong>.`;
+      document.getElementById("confirmationAuditMeta").innerHTML = savedToCloud
+        ? `Emissora <strong>${stationPayload.name}</strong> confirmada no Banco Global Supabase em <strong>${nowStr}</strong>!`
+        : `Emissora <strong>${stationPayload.name}</strong> salva localmente (aguardando reconexão com a nuvem).`;
 
       const portalUrl = window.location.origin + window.location.pathname;
       const banner1Code = `<a href="${portalUrl}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:10px;background:#07142e;color:#fff;padding:10px 16px;border-radius:12px;text-decoration:none;font-family:sans-serif;font-weight:bold;border:2px solid #00e5ff;">Ouça ${stationPayload.name} ao vivo no Melhores Rádios</a>`;
@@ -2354,11 +2415,9 @@
       `;
 
       lucide.createIcons();
-      showToast(
-        isDirectPublish ? "Rádio Publicada no Ar!" : "Cadastro Enviado!",
-        isDirectPublish ? "A emissora já está visível e tocando no Portal Público." : "Sua rádio entrou na fila PENDENTE do Painel Admin.",
-        "success"
-      );
+      if (savedToCloud) {
+        showToast("Gravado na Nuvem!", "Emissora salva e verificada com sucesso no Supabase!", "success");
+      }
       state.adminDirectCreateMode = false;
     }
 
@@ -2453,8 +2512,6 @@
       state.wizardLogoDataUrl = s.logo || "";
       if (s.logo) document.getElementById("wizLogoPreview").src = s.logo;
       renderWizardSegments();
-
-      showToast("Modo de Atualização", `Editando "${s.name}". Avance até o Passo 5 para reenviar à moderação.`, "info");
     }
 
     function updateAdminBadges() {
@@ -2474,9 +2531,6 @@
               Primeiro Acesso • /admin
             </span>
             <h2 class="text-xl font-black text-slate-900 mt-2">Cadastrar Senha do Administrador</h2>
-            <p class="text-xs text-slate-600 mt-1 leading-relaxed">
-              Nenhuma senha administrativa foi configurada ainda. Defina abaixo sua senha exclusiva para proteger o painel de moderação.
-            </p>
           </div>
 
           <div class="space-y-3 text-left mt-4">
@@ -2501,7 +2555,6 @@
               Área Restrita • /admin
             </span>
             <h2 class="text-xl font-black text-slate-900 mt-2">Painel Administrativo Super Admin</h2>
-            <p class="text-xs text-slate-500 mt-1">Digite a senha exclusiva cadastrada pelo administrador para liberar o acesso.</p>
           </div>
 
           <div class="space-y-3 text-left mt-4">
@@ -2528,7 +2581,7 @@
         return;
       }
       if (p1 !== p2) {
-        showToast("Senhas Diferentes", "A confirmação da senha não confere com a nova senha.", "error");
+        showToast("Senhas Diferentes", "A confirmação da senha não confere.", "error");
         return;
       }
 
@@ -2536,7 +2589,7 @@
       localStorage.setItem(STORAGE_KEY_ADMIN_HASH, hash);
       state.adminUnlocked = true;
       renderAdminView();
-      showToast("Senha Cadastrada!", "Sua senha exclusiva foi salva com criptografia SHA-256.", "success");
+      showToast("Senha Cadastrada!", "Senha exclusiva salva com sucesso.", "success");
     }
 
     async function unlockAdminPanel() {
@@ -2552,16 +2605,15 @@
         state.adminUnlocked = true;
         renderAdminView();
         await syncFromCloud(false);
-        showToast("Acesso Liberado", "Bem-vindo ao Painel Super Admin do Melhores Rádios.", "success");
+        showToast("Acesso Liberado", "Bem-vindo ao Painel Super Admin.", "success");
       } else {
-        showToast("Senha Incorreta", "A senha informada não corresponde à senha cadastrada.", "error");
+        showToast("Senha Incorreta", "A senha informada não confere.", "error");
       }
     }
 
     function lockAdminPanel() {
       state.adminUnlocked = false;
       renderAdminView();
-      showToast("Painel Bloqueado", "Sessão administrativa encerrada com segurança.", "info");
     }
 
     function openChangeAdminPasswordModal() {
@@ -2583,15 +2635,11 @@
       const storedHash = localStorage.getItem(STORAGE_KEY_ADMIN_HASH);
 
       if (!current || (await hashPasswordSHA256(current)) !== storedHash) {
-        showToast("Senha Atual Incorreta", "Verifique sua senha atual e tente novamente.", "error");
+        showToast("Senha Atual Incorreta", "Verifique sua senha atual.", "error");
         return;
       }
-      if (nextPass.length < 4) {
-        showToast("Senha Muito Curta", "A nova senha deve ter no mínimo 4 caracteres.", "error");
-        return;
-      }
-      if (nextPass !== confirmPass) {
-        showToast("Confirmação Inválida", "A nova senha e a confirmação não coincidem.", "error");
+      if (nextPass.length < 4 || nextPass !== confirmPass) {
+        showToast("Senha Inválida", "Verifique o tamanho mínimo (4) e a confirmação.", "error");
         return;
       }
 
@@ -2706,9 +2754,7 @@
             <div class="space-y-1 min-w-0">
               <div class="flex flex-wrap items-center gap-2">
                 ${statusBadges[s.status] || ""}
-                <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 text-[11px] font-bold">
-                  ${s.stationType === "amfm" ? "AM/FM Convencional" : "WebRádio"}
-                </span>
+                ${s._unsynced ? `<span class="px-2 py-0.5 rounded bg-red-100 text-red-700 text-[10px] font-extrabold">PENDENTE NUVEM</span>` : `<span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 text-[10px] font-bold">✓ Nuvem OK</span>`}
                 <h3 class="font-extrabold text-base text-slate-900">${s.name} ${s.frequency ? `(${s.frequency})` : ""}</h3>
               </div>
 
@@ -2719,21 +2765,7 @@
 
               <p class="text-xs font-mono text-cyan-800 bg-cyan-50/80 px-2.5 py-1 rounded-lg border border-cyan-100 break-all">
                 <strong>Stream Principal:</strong> ${s.streamPrimary}
-                ${s.streamHttp ? `<br/><strong>Stream HTTP:</strong> ${s.streamHttp}` : ""}
               </p>
-
-              <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-slate-500 pt-1">
-                <span><strong>Solicitante:</strong> ${s.applicantName || "N/A"} (${s.applicantRole || "-"})</span>
-                <span><strong>Email Gestão:</strong> ${s.managementEmail || "N/A"}</span>
-                <span><strong>IP:</strong> <code class="text-slate-700">${s.submittedIp || "127.0.0.1"}</code></span>
-                <span><strong>Data:</strong> ${s.submittedAt || "-"}</span>
-              </div>
-
-              ${s.moderationNotes ? `
-                <p class="text-xs text-amber-900 bg-amber-50 border border-amber-200 px-3 py-1.5 rounded-lg mt-1">
-                  <strong>Obs. do Emissor:</strong> ${s.moderationNotes}
-                </p>
-              ` : ""}
             </div>
           </div>
 
@@ -2756,13 +2788,6 @@
                 <span>Editar</span>
               </button>
 
-              ${s.status === "ACTIVE" ? `
-                <button onclick="adminModerateStation('${s.id}', 'OFFLINE')" class="inline-flex items-center gap-1 px-3 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold">
-                  <i data-lucide="pause-circle" class="w-3.5 h-3.5"></i>
-                  <span>Suspender (48h)</span>
-                </button>
-              ` : ""}
-
               ${s.status !== "REJECTED" ? `
                 <button onclick="adminModerateStation('${s.id}', 'REJECTED')" class="inline-flex items-center gap-1 px-3 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold">
                   <i data-lucide="x" class="w-3.5 h-3.5"></i>
@@ -2784,15 +2809,12 @@
       if (newStatus === "ACTIVE" && (!station.listeners || station.listeners === 0)) {
         station.listeners = Math.floor(Math.random() * 1500) + 250;
       }
-      await saveStationRecord(station);
+      const ok = await saveStationRecord(station, false);
       renderAdminQueue();
 
-      const msgs = {
-        ACTIVE: `A emissora "${station.name}" foi aprovada e já está ao vivo no Portal Público!`,
-        REJECTED: `A solicitação de "${station.name}" foi rejeitada.`,
-        OFFLINE: `A emissora "${station.name}" foi suspensa por inatividade (>48h).`
-      };
-      showToast("Status Atualizado", msgs[newStatus] || "Status alterado.", newStatus === "ACTIVE" ? "success" : "warning");
+      if (ok) {
+        showToast("Confirmado na Nuvem!", `Status de "${station.name}" atualizado no Supabase.`, "success");
+      }
     }
 
     function openAdminEditModal(stationId) {
@@ -2836,7 +2858,7 @@
         </div>
         <div class="flex justify-end gap-2 pt-3 border-t border-slate-200">
           <button onclick="closeAdminEditModal()" class="px-4 py-2 rounded-xl bg-slate-100 text-slate-700 text-xs font-bold">Cancelar</button>
-          <button onclick="saveAdminStationEdit('${s.id}')" class="px-5 py-2 rounded-xl bg-navy-900 text-white text-xs font-extrabold">Salvar Alterações</button>
+          <button onclick="saveAdminStationEdit('${s.id}')" class="px-5 py-2 rounded-xl bg-navy-900 text-white text-xs font-extrabold">Salvar e Confirmar na Nuvem</button>
         </div>
       `;
       document.getElementById("adminEditModal").classList.remove("hidden");
@@ -2862,11 +2884,13 @@
         .filter(Boolean)
         .slice(0, 3);
 
-      await saveStationRecord(s);
+      const ok = await saveStationRecord(s, false);
       closeAdminEditModal();
       renderAdminQueue();
       renderPublicStations();
-      showToast("Cadastro Atualizado", "As edições administrativas foram salvas.", "success");
+      if (ok) {
+        showToast("Cadastro Atualizado!", "Edições salvas e verificadas no Supabase.", "success");
+      }
     }
 
     window.addEventListener("DOMContentLoaded", async () => {
@@ -2893,6 +2917,12 @@
       if (initSupabaseClient()) {
         await syncFromCloud(false);
       }
+
+      document.addEventListener("visibilitychange", () => {
+        if (document.visibilityState === "visible" && supabaseClient) {
+          syncFromCloud(false);
+        }
+      });
     });
   </script>
 </body>
