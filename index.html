@@ -727,6 +727,10 @@
             <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i>
             <span>Cadastrar Nova Rádio Direto</span>
           </button>
+          <button onclick="openRadioBrowserModal()" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-700 text-white text-xs font-extrabold shadow-sm transition" title="Buscar e importar dezenas de emissoras de uma vez pela API pública Radio Browser">
+            <i data-lucide="download-cloud" class="w-3.5 h-3.5"></i>
+            <span>Importar Radio Browser</span>
+          </button>
           <button onclick="forcePushAllLocalToCloud()" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-navy-950 text-xs font-extrabold shadow-sm transition" title="Compacta e reenvia todas as rádios para a nuvem">
             <i data-lucide="upload-cloud" class="w-3.5 h-3.5"></i>
             <span>Compactar & Reenviar Nuvem</span>
@@ -1047,6 +1051,113 @@
         <div class="flex flex-wrap justify-end gap-2 pt-2">
           <button onclick="closeCloudConfigModal()" class="px-4 py-2 rounded-xl bg-slate-100 text-slate-700 text-xs font-bold">Cancelar</button>
           <button onclick="saveCloudConfig()" class="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-extrabold">Salvar e Sincronizar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Radio Browser Bulk Importer Modal -->
+  <div id="radioBrowserModal" class="hidden fixed inset-0 z-50 bg-slate-950/75 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 text-slate-900">
+    <div class="bg-white rounded-2xl max-w-3xl w-full max-h-[92vh] flex flex-col shadow-2xl border border-cyan-500/30 overflow-hidden">
+      <!-- Header -->
+      <div class="flex items-center justify-between px-5 py-4 border-b border-slate-200 bg-navy-950 text-white shrink-0">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-cyan-500/20 text-cyan-300 flex items-center justify-center">
+            <i data-lucide="download-cloud" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="text-base font-black leading-tight">Importar Emissoras — Radio Browser API</h3>
+            <p class="text-[11px] text-cyan-200/80">Baixe listas inteiras de emissoras públicas e salve direto na nuvem (Supabase)</p>
+          </div>
+        </div>
+        <button onclick="closeRadioBrowserModal()" class="text-slate-300 hover:text-white p-1.5 rounded-lg hover:bg-white/10">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Filters -->
+      <div class="p-4 sm:p-5 border-b border-slate-200 bg-slate-50 space-y-3 shrink-0">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">País</label>
+            <select id="rb_country" class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white font-semibold">
+              <option value="BR" selected>Brasil (BR)</option>
+              <option value="PT">Portugal (PT)</option>
+              <option value="US">Estados Unidos (US)</option>
+              <option value="AR">Argentina (AR)</option>
+              <option value="ES">Espanha (ES)</option>
+              <option value="FR">França (FR)</option>
+              <option value="IT">Itália (IT)</option>
+              <option value="GB">Reino Unido (GB)</option>
+              <option value="">Todos os Países (Mundial)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Estado / Região (opcional)</label>
+            <input type="text" id="rb_state" placeholder="Ex: Rio Grande do Sul, São Paulo..." class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white" />
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Estilo / Tag (opcional)</label>
+            <input type="text" id="rb_tag" placeholder="Ex: sertanejo, pop, rock, gospel..." class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white" />
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Quantidade por busca</label>
+            <select id="rb_limit" class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white font-semibold">
+              <option value="25">25 emissoras</option>
+              <option value="50" selected>50 emissoras</option>
+              <option value="100">100 emissoras</option>
+              <option value="200">200 emissoras</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap items-center justify-between gap-3 pt-1">
+          <div class="flex flex-wrap items-center gap-4 text-xs">
+            <label class="inline-flex items-center gap-1.5 font-semibold text-slate-700 cursor-pointer">
+              <input type="checkbox" id="rb_onlyHttps" checked class="accent-cyan-600 w-4 h-4" />
+              <span>Apenas streams HTTPS (recomendado p/ site e app)</span>
+            </label>
+            <label class="inline-flex items-center gap-1.5 font-semibold text-slate-700 cursor-pointer">
+              <input type="checkbox" id="rb_skipExisting" checked class="accent-cyan-600 w-4 h-4" />
+              <span>Ignorar já cadastradas</span>
+            </label>
+          </div>
+          <button type="button" id="rb_searchBtn" onclick="searchRadioBrowserStations()" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-navy-900 hover:bg-navy-800 text-cyan-300 text-xs font-extrabold shadow transition">
+            <i data-lucide="search" class="w-4 h-4"></i>
+            <span>1. Buscar Emissoras</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Progress / Status Banner -->
+      <div id="rb_progressBarWrap" class="hidden px-5 py-3 bg-cyan-50 border-b border-cyan-200 text-xs font-bold text-cyan-950 flex items-center justify-between gap-3 shrink-0">
+        <span id="rb_progressText">Importando emissoras...</span>
+        <div class="w-44 h-2.5 bg-cyan-200 rounded-full overflow-hidden">
+          <div id="rb_progressFill" class="h-full bg-cyan-600 transition-all duration-200" style="width:0%"></div>
+        </div>
+      </div>
+
+      <!-- Results List -->
+      <div class="flex-1 overflow-y-auto p-4 sm:p-5 space-y-2.5" id="rb_resultsContainer">
+        <div class="text-center py-10 text-xs text-slate-500 space-y-2">
+          <p class="font-bold text-slate-700 text-sm">Pronto para buscar no Radio Browser</p>
+          <p>Escolha o país (ex: Brasil), opcionalmente um estado ou estilo musical, e clique em <strong>1. Buscar Emissoras</strong>.</p>
+        </div>
+      </div>
+
+      <!-- Footer Actions -->
+      <div class="px-5 py-3.5 border-t border-slate-200 bg-slate-50 flex flex-wrap items-center justify-between gap-3 shrink-0">
+        <div class="flex items-center gap-2 text-xs">
+          <button type="button" onclick="toggleSelectAllRadioBrowser(true)" class="px-3 py-1.5 rounded-lg bg-white border border-slate-300 hover:bg-slate-100 font-bold text-slate-700">Marcar Todas</button>
+          <button type="button" onclick="toggleSelectAllRadioBrowser(false)" class="px-3 py-1.5 rounded-lg bg-white border border-slate-300 hover:bg-slate-100 font-bold text-slate-700">Desmarcar</button>
+          <span id="rb_selectedCounter" class="font-extrabold text-navy-900 ml-1">0 selecionadas</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <button type="button" onclick="closeRadioBrowserModal()" class="px-4 py-2 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-bold">Fechar</button>
+          <button type="button" id="rb_importBtn" onclick="importSelectedRadioBrowserStations()" disabled class="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 disabled:opacity-40 text-white text-xs font-extrabold shadow transition">
+            <i data-lucide="cloud-upload" class="w-4 h-4"></i>
+            <span>2. Importar Selecionadas para a Nuvem</span>
+          </button>
         </div>
       </div>
     </div>
@@ -2976,6 +3087,309 @@
       renderPublicStations();
       if (ok) {
         showToast("Cadastro Atualizado!", "Edições salvas e verificadas no Supabase.", "success");
+      }
+    }
+
+    // =========================================================================
+    // IMPORTADOR EM LOTE: API PÚBLICA RADIO BROWSER (api.radio-browser.info)
+    // =========================================================================
+    const RADIO_BROWSER_MIRRORS = [
+      "https://de1.api.radio-browser.info",
+      "https://nl1.api.radio-browser.info",
+      "https://at1.api.radio-browser.info",
+      "https://all.api.radio-browser.info"
+    ];
+
+    const COUNTRY_CODE_TO_PT = {
+      BR: "Brasil", PT: "Portugal", US: "Estados Unidos", AR: "Argentina",
+      ES: "Espanha", FR: "França", IT: "Itália", GB: "Reino Unido",
+      DE: "Alemanha", JP: "Japão", CA: "Canadá", CL: "Chile",
+      UY: "Uruguai", PY: "Paraguai", CO: "Colômbia", MX: "México",
+      AO: "Angola", MZ: "Moçambique", CH: "Suíça", AU: "Austrália"
+    };
+
+    const BR_STATE_NAME_TO_UF = {
+      "acre": "AC", "alagoas": "AL", "amapa": "AP", "amapá": "AP", "amazonas": "AM",
+      "bahia": "BA", "ceara": "CE", "ceará": "CE", "distrito federal": "DF",
+      "espirito santo": "ES", "espírito santo": "ES", "goias": "GO", "goiás": "GO",
+      "maranhao": "MA", "maranhão": "MA", "mato grosso": "MT", "mato grosso do sul": "MS",
+      "minas gerais": "MG", "para": "PA", "pará": "PA", "paraiba": "PB", "paraíba": "PB",
+      "parana": "PR", "paraná": "PR", "pernambuco": "PE", "piaui": "PI", "piauí": "PI",
+      "rio de janeiro": "RJ", "rio grande do norte": "RN", "rio grande do sul": "RS",
+      "rondonia": "RO", "rondônia": "RO", "roraima": "RR", "santa catarina": "SC",
+      "sao paulo": "SP", "são paulo": "SP", "sergipe": "SE", "tocantins": "TO"
+    };
+
+    let rbCandidates = [];
+    let rbSelectedIds = new Set();
+    let rbIsImporting = false;
+
+    function openRadioBrowserModal() {
+      document.getElementById("radioBrowserModal").classList.remove("hidden");
+      lucide.createIcons();
+    }
+
+    function closeRadioBrowserModal() {
+      if (rbIsImporting) return;
+      if (testerAudioEl && !testerAudioEl.paused) {
+        testerAudioEl.pause();
+        testerAudioEl.src = "";
+      }
+      document.getElementById("radioBrowserModal").classList.add("hidden");
+    }
+
+    function extractBrazilUF(st) {
+      const iso = (st.iso_3166_2 || "").trim().toUpperCase();
+      if (iso.startsWith("BR-") && iso.length === 5) return iso.slice(3);
+      const rawState = (st.state || "").trim();
+      if (rawState.length === 2) return rawState.toUpperCase();
+      const mapped = BR_STATE_NAME_TO_UF[rawState.toLowerCase()];
+      if (mapped) return mapped;
+      return rawState ? rawState.slice(0, 20) : "BR";
+    }
+
+    function mapRadioBrowserToStation(st) {
+      const streamUrl = (st.url_resolved || st.url || "").trim();
+      const cc = (st.countrycode || "").trim().toUpperCase();
+      const countryName = COUNTRY_CODE_TO_PT[cc] || (st.country || "Brasil").trim();
+      const uf = cc === "BR" ? extractBrazilUF(st) : (st.state || countryName).trim().slice(0, 20);
+      const cleanName = (st.name || "Rádio Online").replace(/\s+/g, " ").trim().slice(0, 80);
+
+      // Extrai frequência se aparecer no nome (ex: "96.5 FM")
+      const freqMatch = cleanName.match(/\b(\d{2,4}(?:[.,]\d)?\s*(?:FM|AM))\b/i);
+      const frequency = freqMatch ? freqMatch[1].toUpperCase() : "";
+
+      const rawTags = (st.tags || "")
+        .split(",")
+        .map(t => t.trim())
+        .filter(Boolean)
+        .map(t => t.charAt(0).toUpperCase() + t.slice(1))
+        .slice(0, 3);
+
+      const safeFavicon = (st.favicon || "").trim().startsWith("https://")
+        ? st.favicon.trim()
+        : `https://placehold.co/200x200/07142e/00e5ff?text=${encodeURIComponent(cleanName.slice(0, 10).toUpperCase())}`;
+
+      return normalizeStation({
+        id: "rb_" + st.stationuuid,
+        status: "ACTIVE",
+        stationType: frequency ? "amfm" : "webradio",
+        applicantName: "Importação Radio Browser API",
+        applicantEmail: "admin@melhoresradios.com.br",
+        applicantRole: "Administrador do Portal (Cadastro Interno)",
+        managementEmail: "admin@melhoresradios.com.br",
+        name: cleanName,
+        frequency: frequency,
+        slogan: st.bitrate ? `Transmissão Digital ${st.bitrate} kbps` : "Transmissão Digital Ao Vivo",
+        website: (st.homepage || "https://melhores-radios.netlify.app/").trim(),
+        country: countryName,
+        state: uf,
+        city: (st.state || countryName).trim().slice(0, 40),
+        logo: safeFavicon,
+        streamPrimary: streamUrl,
+        streamHttp: streamUrl.startsWith("http://") ? streamUrl : "",
+        streamAlt: "",
+        segments: rawTags.length ? rawTags : ["Eclética"],
+        submittedAt: new Date().toLocaleString("pt-BR"),
+        listeners: Math.max(100, Number(st.clickcount || st.votes || 120))
+      });
+    }
+
+    async function fetchFromRadioBrowserWithFallback(queryString) {
+      let lastErr = null;
+      for (const base of RADIO_BROWSER_MIRRORS) {
+        try {
+          const resp = await fetch(`${base}/json/stations/search?${queryString}`, {
+            headers: { "Accept": "application/json" }
+          });
+          if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+          const data = await resp.json();
+          if (Array.isArray(data)) return data;
+        } catch (err) {
+          lastErr = err;
+        }
+      }
+      throw lastErr || new Error("Não foi possível conectar aos servidores do Radio Browser.");
+    }
+
+    async function searchRadioBrowserStations() {
+      const btn = document.getElementById("rb_searchBtn");
+      const container = document.getElementById("rb_resultsContainer");
+      const cc = document.getElementById("rb_country").value;
+      const stateFilter = document.getElementById("rb_state").value.trim();
+      const tagFilter = document.getElementById("rb_tag").value.trim();
+      const limit = Number(document.getElementById("rb_limit").value || 50);
+      const onlyHttps = document.getElementById("rb_onlyHttps").checked;
+      const skipExisting = document.getElementById("rb_skipExisting").checked;
+
+      btn.disabled = true;
+      btn.innerHTML = `<i data-lucide="refresh-cw" class="w-4 h-4 animate-spin"></i><span>Buscando...</span>`;
+      lucide.createIcons();
+
+      container.innerHTML = `<div class="text-center py-10 text-xs text-slate-600 font-semibold">Consultando servidores públicos do Radio Browser...</div>`;
+
+      try {
+        const params = new URLSearchParams({
+          hidebroken: "true",
+          order: "clickcount",
+          reverse: "true",
+          limit: String(Math.min(limit * 2, 300))
+        });
+        if (cc) params.set("countrycode", cc);
+        if (stateFilter) params.set("state", stateFilter);
+        if (tagFilter) params.set("tag", tagFilter.toLowerCase());
+
+        const rawList = await fetchFromRadioBrowserWithFallback(params.toString());
+
+        const existingIds = new Set(state.stations.map(s => s.id));
+        const existingStreams = new Set(state.stations.map(s => (s.streamPrimary || "").trim().toLowerCase()));
+        const seenStreams = new Set();
+
+        const filtered = [];
+        for (const item of rawList) {
+          const url = (item.url_resolved || item.url || "").trim();
+          if (!url || !item.stationuuid || item.lastcheckok === 0) continue;
+          if (onlyHttps && !url.toLowerCase().startsWith("https://")) continue;
+          if (seenStreams.has(url.toLowerCase())) continue;
+          const mappedId = "rb_" + item.stationuuid;
+          if (skipExisting && (existingIds.has(mappedId) || existingStreams.has(url.toLowerCase()))) continue;
+
+          seenStreams.add(url.toLowerCase());
+          filtered.push(mapRadioBrowserToStation(item));
+          if (filtered.length >= limit) break;
+        }
+
+        rbCandidates = filtered;
+        rbSelectedIds = new Set(filtered.map(s => s.id));
+        renderRadioBrowserResults();
+      } catch (err) {
+        console.error("Erro Radio Browser:", err);
+        container.innerHTML = `<div class="p-6 text-center text-xs text-red-700 bg-red-50 rounded-xl border border-red-200 font-semibold">Erro ao consultar o Radio Browser: ${err.message}. Tente novamente em alguns segundos.</div>`;
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<i data-lucide="search" class="w-4 h-4"></i><span>1. Buscar Emissoras</span>`;
+        lucide.createIcons();
+      }
+    }
+
+    function renderRadioBrowserResults() {
+      const container = document.getElementById("rb_resultsContainer");
+      const counter = document.getElementById("rb_selectedCounter");
+      const importBtn = document.getElementById("rb_importBtn");
+
+      counter.textContent = `${rbSelectedIds.size} selecionada${rbSelectedIds.size === 1 ? "" : "s"}`;
+      importBtn.disabled = rbSelectedIds.size === 0 || rbIsImporting;
+
+      if (rbCandidates.length === 0) {
+        container.innerHTML = `<div class="text-center py-10 text-xs text-slate-500">Nenhuma emissora nova encontrada com esses filtros. Tente remover o filtro de estado/tag ou desmarcar "Ignorar já cadastradas".</div>`;
+        return;
+      }
+
+      container.innerHTML = rbCandidates.map(s => {
+        const checked = rbSelectedIds.has(s.id);
+        return `
+          <div class="flex items-center justify-between gap-3 p-3 rounded-xl border ${checked ? "border-cyan-400 bg-cyan-50/40" : "border-slate-200 bg-white"} text-xs">
+            <label class="flex items-center gap-3 min-w-0 flex-1 cursor-pointer">
+              <input type="checkbox" ${checked ? "checked" : ""} onchange="toggleRadioBrowserItem('${s.id}')" class="accent-cyan-600 w-4 h-4 shrink-0" />
+              <img src="${s.logo}" onerror="this.src='https://placehold.co/100x100/07142e/00e5ff?text=RADIO'" class="w-10 h-10 rounded-lg object-cover bg-navy-900 border border-slate-200 shrink-0" />
+              <div class="min-w-0 flex-1">
+                <p class="font-extrabold text-slate-900 truncate">${s.name} ${s.frequency ? `<span class="text-amber-700">(${s.frequency})</span>` : ""}</p>
+                <p class="text-[11px] text-slate-500 truncate">${s.city}/${s.state} • ${s.country} • ${(s.segments || []).join(", ")}</p>
+              </div>
+            </label>
+            <button type="button" onclick="previewRadioBrowserStream('${s.streamPrimary.replace(/'/g, "\'")}', '${s.name.replace(/'/g, "\'")}')" class="px-2.5 py-1.5 rounded-lg bg-navy-900 hover:bg-navy-800 text-cyan-300 font-bold shrink-0">
+              ▶ Testar
+            </button>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function toggleRadioBrowserItem(id) {
+      if (rbSelectedIds.has(id)) rbSelectedIds.delete(id);
+      else rbSelectedIds.add(id);
+      renderRadioBrowserResults();
+    }
+
+    function toggleSelectAllRadioBrowser(selectAll) {
+      rbSelectedIds = selectAll ? new Set(rbCandidates.map(s => s.id)) : new Set();
+      renderRadioBrowserResults();
+    }
+
+    function previewRadioBrowserStream(url, name) {
+      if (state.isPlaying) {
+        audioEl.pause();
+        state.isPlaying = false;
+        syncPlayerPlayStateUI();
+      }
+      testerAudioEl.src = url;
+      testerAudioEl.play()
+        .then(() => showToast("Testando Áudio", `Tocando prévia de "${name}".`, "info"))
+        .catch(() => showToast("Sem Áudio", `Não foi possível reproduzir "${name}" neste navegador.`, "warning"));
+    }
+
+    async function importSelectedRadioBrowserStations() {
+      if (rbIsImporting || rbSelectedIds.size === 0) return;
+      if (!supabaseClient) initSupabaseClient();
+      if (!supabaseClient) {
+        showToast("Sem Conexão", "Supabase não está conectado.", "error");
+        return;
+      }
+
+      const selectedList = rbCandidates.filter(s => rbSelectedIds.has(s.id));
+      rbIsImporting = true;
+
+      const wrap = document.getElementById("rb_progressBarWrap");
+      const textEl = document.getElementById("rb_progressText");
+      const fillEl = document.getElementById("rb_progressFill");
+      const importBtn = document.getElementById("rb_importBtn");
+
+      wrap.classList.remove("hidden");
+      importBtn.disabled = true;
+
+      let importedCount = 0;
+      const chunkSize = 10;
+
+      try {
+        for (let i = 0; i < selectedList.length; i += chunkSize) {
+          const chunk = selectedList.slice(i, i + chunkSize);
+          const rows = chunk.map(st => ({
+            id: st.id,
+            status: "ACTIVE",
+            name: st.name,
+            city: st.city,
+            state: st.state,
+            country: st.country,
+            stream_primary: st.streamPrimary,
+            management_email: st.managementEmail,
+            listeners: st.listeners || 120,
+            payload: st
+          }));
+
+          const { error } = await supabaseClient
+            .from("radios")
+            .upsert(rows, { onConflict: "id" });
+
+          if (error) throw error;
+
+          importedCount += chunk.length;
+          const pct = Math.round((importedCount / selectedList.length) * 100);
+          textEl.textContent = `Gravando na nuvem: ${importedCount} de ${selectedList.length} emissoras (${pct}%)...`;
+          fillEl.style.width = `${pct}%`;
+        }
+
+        await syncFromCloud(false);
+        showToast("Importação Concluída!", `${importedCount} emissoras importadas do Radio Browser e já no ar!`, "success");
+        rbCandidates = [];
+        rbSelectedIds.clear();
+        rbIsImporting = false;
+        wrap.classList.add("hidden");
+        closeRadioBrowserModal();
+      } catch (err) {
+        console.error("Erro ao importar Radio Browser:", err);
+        showToast("Erro na Importação", `${importedCount} salvas antes do erro: ${err.message}`, "error");
+        rbIsImporting = false;
+        importBtn.disabled = false;
       }
     }
 
