@@ -7,7 +7,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="Melhores Rádios" />
-  <link id="pwaManifestLink" rel="manifest" />
+  <link id="pwaManifestLink" rel="manifest" href="/manifest.json" />
   <title>Melhores Rádios - Ouça Rádios Online do Brasil e do Mundo</title>
 
   <!-- Tailwind CSS -->
@@ -119,24 +119,24 @@
     <div class="max-w-7xl mx-auto px-3 sm:px-6">
       <div class="flex items-center justify-between h-16 sm:h-20 gap-3">
         
-        <!-- Brand Logo -->
-        <button onclick="switchModule('public')" class="flex items-center gap-2.5 sm:gap-3.5 text-left group focus:outline-none shrink-0">
-          <div id="headerLogoContainer" class="w-12 h-12 sm:w-16 sm:h-16 shrink-0 logo-glow transition-transform duration-300 group-hover:scale-105"></div>
-          <div>
-            <div class="flex items-center gap-1.5">
-              <span class="font-black text-lg sm:text-2xl tracking-tight bg-gradient-to-r from-amber-300 via-yellow-400 to-orange-400 bg-clip-text text-transparent">
+        <!-- Brand Logo + Botão Nuvem Online Independente -->
+        <div class="flex items-center gap-2.5 sm:gap-3.5 shrink-0">
+          <button type="button" onclick="goHomeAndRefresh()" class="flex items-center gap-2.5 sm:gap-3.5 text-left group focus:outline-none">
+            <div id="headerLogoContainer" class="w-12 h-12 sm:w-16 sm:h-16 shrink-0 logo-glow transition-transform duration-300 group-hover:scale-105"></div>
+            <div>
+              <span class="block font-black text-lg sm:text-2xl tracking-tight bg-gradient-to-r from-amber-300 via-yellow-400 to-orange-400 bg-clip-text text-transparent">
                 MELHORES RÁDIOS
               </span>
-              <span id="cloudStatusIndicator" class="hidden lg:inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-400/40 uppercase tracking-wider">
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                Nuvem Online
-              </span>
+              <p class="text-[11px] sm:text-xs text-slate-300 font-medium leading-tight">
+                Ouça rádios online do Brasil e do mundo
+              </p>
             </div>
-            <p class="text-[11px] sm:text-xs text-slate-300 font-medium leading-tight">
-              Ouça rádios online do Brasil e do mundo
-            </p>
-          </div>
-        </button>
+          </button>
+          <button type="button" id="cloudStatusIndicator" onclick="syncFromCloud(true)" title="Clique para sincronizar emissoras da nuvem agora" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-500/20 hover:bg-emerald-500/35 text-emerald-300 border border-emerald-400/40 uppercase tracking-wider transition cursor-pointer">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span>Nuvem Online</span>
+          </button>
+        </div>
 
         <!-- Desktop Module Switcher -->
         <nav class="hidden md:flex items-center gap-2 bg-navy-900/90 p-1.5 rounded-xl border border-slate-700/70">
@@ -289,6 +289,15 @@
 
     <!-- Station Grid -->
     <section id="stationsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3.5 sm:gap-4"></section>
+
+    <!-- Loading State -->
+    <div id="publicLoadingState" class="hidden bg-white/95 backdrop-blur-md text-slate-900 rounded-2xl border border-cyan-500/20 p-10 text-center space-y-3 shadow-xl">
+      <div class="w-12 h-12 rounded-2xl bg-navy-900 text-cyan-400 flex items-center justify-center mx-auto shadow animate-spin">
+        <i data-lucide="refresh-cw" class="w-6 h-6"></i>
+      </div>
+      <h3 class="text-base font-bold text-slate-800">Sincronizando emissoras da nuvem...</h3>
+      <p class="text-sm text-slate-500 max-w-md mx-auto">Aguarde um instante enquanto carregamos todas as rádios cadastradas.</p>
+    </div>
 
     <!-- Empty State -->
     <div id="publicEmptyState" class="hidden bg-white/95 backdrop-blur-md text-slate-900 rounded-2xl border border-cyan-500/20 p-10 text-center space-y-3 shadow-xl">
@@ -1068,8 +1077,8 @@
             auth: { persistSession: false }
           });
           if (indicator) {
-            indicator.className = "hidden lg:inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-400/40 uppercase tracking-wider";
-            indicator.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Nuvem Online`;
+            indicator.className = "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-500/20 hover:bg-emerald-500/35 text-emerald-300 border border-emerald-400/40 uppercase tracking-wider transition cursor-pointer";
+            indicator.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span><span>Nuvem Online</span>`;
           }
           return true;
         } catch (e) {
@@ -1128,15 +1137,53 @@
       });
     }
 
-    // Paginated batch fetch (10 rows per request) so mobile connections NEVER time out on large Base64 logos
-    async function syncFromCloud(showFeedback = false) {
-      if (!supabaseClient || isSyncingCloud) return;
-      isSyncingCloud = true;
+    function mapCloudRowToStation(row) {
+      return normalizeStation({
+        ...(row.payload || {}),
+        id: row.id,
+        status: row.status || row.payload?.status || "ACTIVE",
+        name: row.name || row.payload?.name,
+        city: row.city || row.payload?.city,
+        state: row.state || row.payload?.state,
+        country: row.country || row.payload?.country || "Brasil",
+        streamPrimary: row.stream_primary || row.payload?.streamPrimary,
+        managementEmail: row.management_email || row.payload?.managementEmail,
+        listeners: row.listeners ?? (row.payload?.listeners || 100)
+      });
+    }
 
+    function setCloudIndicatorState(syncing) {
+      const indicator = document.getElementById("cloudStatusIndicator");
+      if (!indicator) return;
+      if (syncing) {
+        indicator.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-amber-300 animate-ping"></span><span>Sincronizando...</span>`;
+      } else {
+        indicator.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span><span>Nuvem Online</span>`;
+      }
+    }
+
+    // Paginated batch fetch com renderização progressiva: exibe rádios já no primeiro lote
+    async function syncFromCloud(showFeedback = false) {
+      if (!supabaseClient) initSupabaseClient();
+      if (!supabaseClient) {
+        if (showFeedback) showToast("Sem Conexão", "Cliente Supabase não inicializado.", "error");
+        return;
+      }
+      if (isSyncingCloud) return;
+      isSyncingCloud = true;
+      setCloudIndicatorState(true);
+
+      const loadingEl = document.getElementById("publicLoadingState");
+      const emptyEl = document.getElementById("publicEmptyState");
+      if (state.stations.length === 0 && loadingEl) {
+        loadingEl.classList.remove("hidden");
+        if (emptyEl) emptyEl.classList.add("hidden");
+      }
+
+      let allCloudStations = [];
       try {
-        const pageSize = 10;
+        const pageSize = 15;
         let from = 0;
-        let allRows = [];
         let keepFetching = true;
 
         while (keepFetching) {
@@ -1149,7 +1196,22 @@
           if (error) throw error;
 
           if (Array.isArray(data) && data.length > 0) {
-            allRows = allRows.concat(data);
+            const batch = data.map(mapCloudRowToStation);
+            allCloudStations = allCloudStations.concat(batch);
+
+            // Renderização progressiva imediata para o usuário já ver as rádios
+            const batchIds = new Set(allCloudStations.map(s => s.id));
+            const keepUnsynced = state.stations
+              .filter(s => !batchIds.has(s.id) && s._unsynced === true)
+              .map(normalizeStation);
+            state.stations = [...keepUnsynced, ...allCloudStations];
+            if (loadingEl) loadingEl.classList.add("hidden");
+            updateAdminBadges();
+            renderPublicStations();
+            if (state.activeModule === "admin" && state.adminUnlocked) {
+              renderAdminQueue();
+            }
+
             from += pageSize;
             if (data.length < pageSize) keepFetching = false;
           } else {
@@ -1157,29 +1219,13 @@
           }
         }
 
-        const cloudStations = allRows.map(row =>
-          normalizeStation({
-            ...(row.payload || {}),
-            id: row.id,
-            status: row.status || row.payload?.status || "ACTIVE",
-            name: row.name || row.payload?.name,
-            city: row.city || row.payload?.city,
-            state: row.state || row.payload?.state,
-            country: row.country || row.payload?.country || "Brasil",
-            streamPrimary: row.stream_primary || row.payload?.streamPrimary,
-            managementEmail: row.management_email || row.payload?.managementEmail,
-            listeners: row.listeners ?? (row.payload?.listeners || 100)
-          })
-        );
-
-        const cloudIds = new Set(cloudStations.map(s => s.id));
+        const cloudIds = new Set(allCloudStations.map(s => s.id));
         const unsyncedLocal = state.stations
           .filter(s => !cloudIds.has(s.id) && s._unsynced === true)
           .map(normalizeStation);
 
-        // Only replace state if we actually got data or local was empty
-        if (cloudStations.length > 0 || state.stations.length === 0) {
-          state.stations = [...unsyncedLocal, ...cloudStations];
+        if (allCloudStations.length > 0 || state.stations.length === 0) {
+          state.stations = [...unsyncedLocal, ...allCloudStations];
           saveLocalMirror();
         }
 
@@ -1190,7 +1236,8 @@
         }
 
         if (showFeedback) {
-          showToast("Nuvem Sincronizada!", `${cloudStations.length} emissoras carregadas na lista.`, "success");
+          const activeCount = state.stations.filter(s => s.status === "ACTIVE").length;
+          showToast("Nuvem Sincronizada!", `${allCloudStations.length} emissoras carregadas (${activeCount} ativas no portal).`, "success");
         }
 
         for (const pendingItem of unsyncedLocal) {
@@ -1198,14 +1245,17 @@
         }
       } catch (err) {
         console.error("Erro syncFromCloud:", err);
-        // Ensure existing local stations are normalized and displayed even on network hiccup
         state.stations = state.stations.map(normalizeStation);
+        if (allCloudStations.length > 0) saveLocalMirror();
         renderPublicStations();
         if (showFeedback) {
-          showToast("Aviso de Sincronização", "Exibindo emissoras salvas. Tente sincronizar novamente em instantes.", "warning");
+          showToast("Aviso de Sincronização", "Exibindo emissoras carregadas. Tente sincronizar novamente em instantes.", "warning");
         }
       } finally {
         isSyncingCloud = false;
+        setCloudIndicatorState(false);
+        if (loadingEl) loadingEl.classList.add("hidden");
+        renderPublicStations();
       }
     }
 
@@ -1437,7 +1487,18 @@
     function saveLocalMirror() {
       try {
         localStorage.setItem(STORAGE_KEY_STATIONS, JSON.stringify(state.stations));
-      } catch (e) {}
+      } catch (e) {
+        // Se os logotipos Base64 excederem a cota de 5MB do navegador, salva versão leve sem Base64 pesado
+        try {
+          const lightCopy = state.stations.map(s => ({
+            ...s,
+            logo: (s.logo && s.logo.startsWith("data:image") && s.logo.length > 25000)
+              ? `https://placehold.co/200x200/07142e/00e5ff?text=${encodeURIComponent((s.name || "RADIO").slice(0, 10))}`
+              : s.logo
+          }));
+          localStorage.setItem(STORAGE_KEY_STATIONS, JSON.stringify(lightCopy));
+        } catch (e2) {}
+      }
     }
 
     async function saveStationRecord(station, silent = false) {
@@ -1525,21 +1586,24 @@
     }
 
     function initDynamicPwaManifest() {
-      try {
-        const manifest = {
-          name: "Melhores Rádios - Brasil e Mundo",
-          short_name: "Melhores Rádios",
-          description: "Ouça rádios online do Brasil e do mundo ao vivo.",
-          start_url: "./",
-          display: "standalone",
-          background_color: "#061229",
-          theme_color: "#061229",
-          orientation: "portrait-primary"
-        };
-        const blob = new Blob([JSON.stringify(manifest)], { type: "application/manifest+json" });
-        const link = document.getElementById("pwaManifestLink");
-        if (link) link.href = URL.createObjectURL(blob);
-      } catch (e) {}
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("/sw.js").catch(() => {});
+      }
+    }
+
+    function goHomeAndRefresh() {
+      const inp = document.getElementById("publicSearchInput");
+      if (inp) inp.value = "";
+      const scope = document.getElementById("searchScopeSelect");
+      if (scope) scope.value = "completo";
+      state.selectedStateFilter = "";
+      state.selectedCityFilter = "";
+      state.selectedCountryFilter = "";
+      state.selectedSegmentFilter = "";
+      state.publicTab = "top";
+      switchModule("public");
+      setPublicTab("top");
+      syncFromCloud(false);
     }
 
     function openSendDataToAdminModal() {
@@ -1646,6 +1710,20 @@
       quickSocials.innerHTML = socialLinks.join("");
       updatePlayerFavoriteIcon();
       lucide.createIcons();
+
+      if ("mediaSession" in navigator) {
+        try {
+          navigator.mediaSession.metadata = new MediaMetadata({
+            title: station.name,
+            artist: `${station.city}/${station.state} • Melhores Rádios`,
+            album: station.frequency || "WebRádio Ao Vivo",
+            artwork: station.logo ? [{ src: station.logo, sizes: "192x192", type: "image/jpeg" }] : []
+          });
+          navigator.mediaSession.setActionHandler("play", () => { if (!state.isPlaying) togglePlayPause(); });
+          navigator.mediaSession.setActionHandler("pause", () => { if (state.isPlaying) togglePlayPause(); });
+          navigator.mediaSession.setActionHandler("stop", () => { if (state.isPlaying) togglePlayPause(); });
+        } catch (e) {}
+      }
 
       const candidates = [];
       if (station.streamPrimary) candidates.push({ mode: "primary", label: "Ao Vivo (Principal)", url: station.streamPrimary });
@@ -1960,12 +2038,20 @@
       const grid = document.getElementById("stationsGrid");
       const empty = document.getElementById("publicEmptyState");
 
+      const loadingEl = document.getElementById("publicLoadingState");
       if (list.length === 0) {
         grid.innerHTML = "";
-        empty.classList.remove("hidden");
+        if (isSyncingCloud && state.stations.length === 0) {
+          if (loadingEl) loadingEl.classList.remove("hidden");
+          empty.classList.add("hidden");
+        } else {
+          if (loadingEl) loadingEl.classList.add("hidden");
+          empty.classList.remove("hidden");
+        }
         lucide.createIcons();
         return;
       }
+      if (loadingEl) loadingEl.classList.add("hidden");
 
       empty.classList.add("hidden");
       grid.innerHTML = list.map(s => {
@@ -2911,10 +2997,16 @@
       updateAdminBadges();
       initWizardControls();
       updateWizardUI();
-      renderPublicStations();
+      const cloudReady = initSupabaseClient();
+      if (cloudReady && state.stations.length === 0) {
+        const loadingEl = document.getElementById("publicLoadingState");
+        if (loadingEl) loadingEl.classList.remove("hidden");
+      } else {
+        renderPublicStations();
+      }
       lucide.createIcons();
 
-      if (initSupabaseClient()) {
+      if (cloudReady) {
         await syncFromCloud(false);
       }
 
