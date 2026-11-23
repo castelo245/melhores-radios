@@ -1096,10 +1096,10 @@
 
       <!-- Filters -->
       <div class="p-4 sm:p-5 border-b border-slate-200 bg-slate-50 space-y-3 shrink-0">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 text-xs">
           <div>
             <label class="block font-bold text-slate-700 mb-1">País</label>
-            <select id="rb_country" class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white font-semibold">
+            <select id="rb_country" onchange="resetRadioBrowserPage()" class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white font-semibold">
               <option value="BR" selected>Brasil (BR)</option>
               <option value="PT">Portugal (PT)</option>
               <option value="US">Estados Unidos (US)</option>
@@ -1113,20 +1113,28 @@
           </div>
           <div>
             <label class="block font-bold text-slate-700 mb-1">Estado / Região (opcional)</label>
-            <input type="text" id="rb_state" placeholder="Ex: Rio Grande do Sul, São Paulo..." class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white" />
+            <input type="text" id="rb_state" oninput="resetRadioBrowserPage()" placeholder="Ex: Rio Grande do Sul, São Paulo..." class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white" />
           </div>
           <div>
             <label class="block font-bold text-slate-700 mb-1">Estilo / Tag (opcional)</label>
-            <input type="text" id="rb_tag" placeholder="Ex: sertanejo, pop, rock, gospel..." class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white" />
+            <input type="text" id="rb_tag" oninput="resetRadioBrowserPage()" placeholder="Ex: sertanejo, pop, rock, gospel..." class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white" />
           </div>
           <div>
             <label class="block font-bold text-slate-700 mb-1">Quantidade por busca</label>
             <select id="rb_limit" class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white font-semibold">
               <option value="25">25 emissoras</option>
-              <option value="50" selected>50 emissoras</option>
+              <option value="50">50 emissoras</option>
               <option value="100">100 emissoras</option>
-              <option value="200">200 emissoras</option>
+              <option value="200" selected>200 emissoras</option>
             </select>
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Página (Lote de 300)</label>
+            <div class="flex items-center gap-1">
+              <button type="button" onclick="stepRadioBrowserPage(-1)" class="px-2.5 py-2 rounded-xl bg-slate-200 hover:bg-slate-300 font-black text-slate-800">−</button>
+              <input type="number" id="rb_page" value="1" min="1" max="500" class="w-full px-2 py-2 rounded-xl border border-slate-300 bg-white text-center font-extrabold text-navy-900" />
+              <button type="button" onclick="stepRadioBrowserPage(1)" class="px-2.5 py-2 rounded-xl bg-slate-200 hover:bg-slate-300 font-black text-slate-800">+</button>
+            </div>
           </div>
         </div>
 
@@ -3447,11 +3455,16 @@
       container.innerHTML = `<div class="text-center py-10 text-xs text-slate-600 font-semibold">Consultando servidores públicos do Radio Browser...</div>`;
 
       try {
+        const pageNum = Math.max(1, parseInt(document.getElementById("rb_page")?.value || "1", 10) || 1);
+        const batchWindow = 300;
+        const offsetVal = (pageNum - 1) * batchWindow;
+
         const params = new URLSearchParams({
           hidebroken: "true",
           order: "clickcount",
           reverse: "true",
-          limit: String(Math.min(limit * 2, 300))
+          offset: String(offsetVal),
+          limit: String(batchWindow)
         });
         if (cc) params.set("countrycode", cc);
         if (stateFilter) params.set("state", stateFilter);
@@ -3464,14 +3477,17 @@
         if (skipExisting && supabaseClient && rawList.length > 0) {
           try {
             const checkIds = rawList.filter(x => x.stationuuid).map(x => "rb_" + x.stationuuid);
-            const { data: foundRows } = await supabaseClient
-              .from("radios")
-              .select("id, stream_primary")
-              .in("id", checkIds.slice(0, 300));
-            (foundRows || []).forEach(r => {
-              existingIds.add(r.id);
-              if (r.stream_primary) existingStreams.add(r.stream_primary.trim().toLowerCase());
-            });
+            for (let c = 0; c < checkIds.length; c += 100) {
+              const sliceIds = checkIds.slice(c, c + 100);
+              const { data: foundRows } = await supabaseClient
+                .from("radios")
+                .select("id, stream_primary")
+                .in("id", sliceIds);
+              (foundRows || []).forEach(r => {
+                existingIds.add(r.id);
+                if (r.stream_primary) existingStreams.add(r.stream_primary.trim().toLowerCase());
+              });
+            }
           } catch (e) {}
         }
         const seenStreams = new Set();
@@ -3534,6 +3550,18 @@
           </div>
         `;
       }).join("");
+    }
+
+    function resetRadioBrowserPage() {
+      const el = document.getElementById("rb_page");
+      if (el) el.value = "1";
+    }
+
+    function stepRadioBrowserPage(delta) {
+      const el = document.getElementById("rb_page");
+      if (!el) return;
+      const cur = Math.max(1, parseInt(el.value || "1", 10) || 1);
+      el.value = String(Math.max(1, Math.min(500, cur + delta)));
     }
 
     function toggleRadioBrowserItem(id) {
@@ -3610,12 +3638,15 @@
         }
 
         await syncFromCloud(false);
-        showToast("Importação Concluída!", `${importedCount} emissoras importadas do Radio Browser e já no ar!`, "success");
+        stepRadioBrowserPage(1);
+        const nextPage = document.getElementById("rb_page")?.value || "2";
+        showToast("Importação Concluída!", `${importedCount} emissoras salvas! Página avançada para ${nextPage} — clique em "1. Buscar Emissoras" para o próximo lote.`, "success");
         rbCandidates = [];
         rbSelectedIds.clear();
         rbIsImporting = false;
         wrap.classList.add("hidden");
-        closeRadioBrowserModal();
+        renderRadioBrowserResults();
+        document.getElementById("rb_resultsContainer").innerHTML = `<div class="text-center py-10 text-xs text-emerald-800 bg-emerald-50 rounded-xl border border-emerald-200 space-y-2"><p class="font-extrabold text-sm">✓ ${importedCount} emissoras gravadas na nuvem com sucesso!</p><p>A página já avançou automaticamente para a <strong>Página ${nextPage}</strong>. Clique em <strong>1. Buscar Emissoras</strong> para puxar o próximo lote inédito.</p></div>`;
       } catch (err) {
         console.error("Erro ao importar Radio Browser:", err);
         showToast("Erro na Importação", `${importedCount} salvas antes do erro: ${err.message}`, "error");
