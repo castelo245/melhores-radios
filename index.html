@@ -731,6 +731,10 @@
             <i data-lucide="download-cloud" class="w-3.5 h-3.5"></i>
             <span>Importar Radio Browser</span>
           </button>
+          <button onclick="openAutoDjManagerModal()" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-extrabold shadow-sm transition" title="Criar e gerenciar suas 5 web rádios próprias com AutoDJ 24h grátis">
+            <i data-lucide="disc-3" class="w-3.5 h-3.5"></i>
+            <span>AutoDJ 24h (Minhas Rádios)</span>
+          </button>
           <button onclick="forcePushAllLocalToCloud()" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-navy-950 text-xs font-extrabold shadow-sm transition" title="Compacta e reenvia todas as rádios para a nuvem">
             <i data-lucide="upload-cloud" class="w-3.5 h-3.5"></i>
             <span>Compactar & Reenviar Nuvem</span>
@@ -1159,6 +1163,88 @@
             <span>2. Importar Selecionadas para a Nuvem</span>
           </button>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AutoDJ 24h Manager Modal (Minhas Web Rádios Próprias) -->
+  <div id="autoDjModal" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 text-slate-900">
+    <div class="bg-white rounded-2xl max-w-4xl w-full max-h-[92vh] flex flex-col shadow-2xl border border-purple-500/30 overflow-hidden">
+      <!-- Header -->
+      <div class="flex items-center justify-between px-5 py-4 border-b border-slate-200 bg-navy-950 text-white shrink-0">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-purple-500/25 text-purple-300 flex items-center justify-center">
+            <i data-lucide="disc-3" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="text-base font-black leading-tight">AutoDJ 24h — Minhas Web Rádios Próprias</h3>
+            <p class="text-[11px] text-purple-200/85">Crie rádios por estilo musical tocando 24h da nuvem (100% grátis no seu Supabase)</p>
+          </div>
+        </div>
+        <button onclick="closeAutoDjManagerModal()" class="text-slate-300 hover:text-white p-1.5 rounded-lg hover:bg-white/10">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Body -->
+      <div class="flex-1 overflow-y-auto p-4 sm:p-5 space-y-5">
+        <!-- Quick Create 5 Starter Channels Banner -->
+        <div class="p-4 rounded-2xl bg-purple-50 border border-purple-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div class="text-xs text-purple-950 space-y-1">
+            <p class="font-extrabold text-sm">Começar rápido com 5 Web Rádios (1 por estilo musical)</p>
+            <p>Você pode criar as 5 estações de uma vez abaixo e depois subir os arquivos <code>.mp3</code> de cada estilo.</p>
+          </div>
+          <div class="flex flex-wrap gap-2 shrink-0">
+            <button type="button" onclick="createDefault5AutoDjStations()" class="px-3.5 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-extrabold shadow-sm">
+              + Criar 5 Rádios Modelo
+            </button>
+            <button type="button" onclick="openNewAutoDjStationForm()" class="px-3.5 py-2 rounded-xl bg-navy-900 hover:bg-navy-800 text-cyan-300 text-xs font-extrabold">
+              + Nova Rádio AutoDJ
+            </button>
+          </div>
+        </div>
+
+        <!-- New / Edit Station Form (collapsible) -->
+        <div id="autoDjStationFormWrap" class="hidden p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3 text-xs">
+          <div class="flex items-center justify-between">
+            <h4 class="font-extrabold text-sm text-slate-900" id="autoDjFormTitle">Nova Web Rádio AutoDJ 24h</h4>
+            <button type="button" onclick="document.getElementById('autoDjStationFormWrap').classList.add('hidden')" class="text-slate-500 hover:text-slate-800 font-bold">Cancelar</button>
+          </div>
+          <input type="hidden" id="adj_editId" value="" />
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Nome da Rádio *</label>
+              <input type="text" id="adj_name" placeholder="Ex: Melhores Rádios Sertanejo" class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white" />
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Estilo Musical *</label>
+              <input type="text" id="adj_segment" placeholder="Ex: Sertaneja, Flashback, MPB, Gospel, Gauchesca" class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white" />
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Cidade / UF</label>
+              <div class="flex gap-2">
+                <input type="text" id="adj_city" value="Bento Gonçalves" class="flex-1 px-3 py-2 rounded-xl border border-slate-300 bg-white" />
+                <input type="text" id="adj_state" value="RS" maxlength="2" class="w-16 px-3 py-2 rounded-xl border border-slate-300 bg-white uppercase text-center font-bold" />
+              </div>
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Slogan</label>
+              <input type="text" id="adj_slogan" placeholder="Ex: Só modão e sucessos 24 horas!" class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white" />
+            </div>
+          </div>
+          <div class="flex justify-end">
+            <button type="button" onclick="saveAutoDjStationMeta()" class="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold">Salvar Rádio</button>
+          </div>
+        </div>
+
+        <!-- Stations List -->
+        <div id="autoDjStationsList" class="space-y-4"></div>
+      </div>
+
+      <!-- Footer -->
+      <div class="px-5 py-3 border-t border-slate-200 bg-slate-50 flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-600 shrink-0">
+        <span>Bucket Supabase Storage: <code class="font-mono font-bold text-purple-800">autodj-audios</code> (público)</span>
+        <button type="button" onclick="closeAutoDjManagerModal()" class="px-4 py-2 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs font-bold">Fechar</button>
       </div>
     </div>
   </div>
@@ -1836,13 +1922,20 @@
         } catch (e) {}
       }
 
+      // Se for uma Web Rádio própria AutoDJ 24h, toca a playlist sincronizada pelo relógio!
+      if (station.stationType === "autodj" && Array.isArray(station.autodjTracks) && station.autodjTracks.length > 0) {
+        playAutoDjStation(station);
+        return;
+      }
+
+      audioEl.onended = null;
       const candidates = [];
       if (station.streamPrimary) candidates.push({ mode: "primary", label: "Ao Vivo (Principal)", url: station.streamPrimary });
       if (station.streamHttp && station.streamHttp !== station.streamPrimary) candidates.push({ mode: "http", label: "Ao Vivo (Fallback HTTP)", url: station.streamHttp });
       if (station.streamAlt && station.streamAlt !== station.streamPrimary) candidates.push({ mode: "alt", label: "Ao Vivo (Alternativo)", url: station.streamAlt });
 
       if (candidates.length === 0) {
-        showToast("Sem Stream", "Esta emissora não possui URL de streaming configurada.", "error");
+        showToast("Sem Áudio", "Esta emissora ainda não possui músicas no AutoDJ nem URL de streaming.", "warning");
         return;
       }
 
@@ -2193,7 +2286,7 @@
                 </p>
 
                 <div class="flex flex-wrap items-center gap-1 mt-2">
-                  ${s.frequency ? `<span class="px-2 py-0.5 rounded-md text-[10px] font-extrabold bg-amber-100 text-amber-900">${s.frequency}</span>` : `<span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-cyan-50 text-cyan-800">WebRádio</span>`}
+                  ${s.stationType === "autodj" ? `<span class="px-2 py-0.5 rounded-md text-[10px] font-extrabold bg-purple-100 text-purple-900">AutoDJ 24h</span>` : (s.frequency ? `<span class="px-2 py-0.5 rounded-md text-[10px] font-extrabold bg-amber-100 text-amber-900">${s.frequency}</span>` : `<span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-cyan-50 text-cyan-800">WebRádio</span>`)}
                   ${(s.segments || []).slice(0, 2).map(seg => `<span class="px-2 py-0.5 rounded-md text-[10px] font-semibold bg-slate-100 text-slate-600">${seg}</span>`).join("")}
                 </div>
               </div>
@@ -3391,6 +3484,398 @@
         rbIsImporting = false;
         importBtn.disabled = false;
       }
+    }
+
+    // =========================================================================
+    // SISTEMA AUTODJ 24H PRÓPRIO (SUPABASE STORAGE + PLAYER SINCRONIZADO)
+    // =========================================================================
+    const AUTODJ_BUCKET = "autodj-audios";
+    let autoDjCurrentTrackIndex = 0;
+
+    function getAutoDjClockPosition(tracks) {
+      const durations = tracks.map(t => Math.max(10, Number(t.duration) || 180));
+      const totalSec = durations.reduce((acc, d) => acc + d, 0);
+      if (totalSec <= 0) return { index: 0, offset: 0 };
+      const nowSec = Math.floor(Date.now() / 1000) % Math.floor(totalSec);
+      let acc = 0;
+      for (let i = 0; i < durations.length; i++) {
+        if (nowSec < acc + durations[i]) {
+          return { index: i, offset: nowSec - acc };
+        }
+        acc += durations[i];
+      }
+      return { index: 0, offset: 0 };
+    }
+
+    function playAutoDjStation(station, forcedIndex = null, forcedOffset = null) {
+      const tracks = station.autodjTracks || [];
+      if (tracks.length === 0) {
+        showToast("Playlist Vazia", "Adicione arquivos MP3 nesta rádio no Painel Admin → AutoDJ 24h.", "warning");
+        return;
+      }
+
+      clearTimeout(state.fallbackTimer);
+      if (state.hlsInstance) {
+        state.hlsInstance.destroy();
+        state.hlsInstance = null;
+      }
+
+      const pos = forcedIndex === null ? getAutoDjClockPosition(tracks) : { index: forcedIndex % tracks.length, offset: forcedOffset || 0 };
+      autoDjCurrentTrackIndex = pos.index;
+      const track = tracks[autoDjCurrentTrackIndex];
+
+      updatePlayerStatusBadge("AutoDJ 24h • Conectando...", "bg-purple-950 text-purple-200 border-purple-600", "bg-purple-400 animate-ping");
+      document.getElementById("playerSloganText").textContent = `♪ Tocando agora: ${track.title}`;
+
+      if ("mediaSession" in navigator) {
+        try {
+          navigator.mediaSession.metadata = new MediaMetadata({
+            title: track.title || station.name,
+            artist: `${station.name} • AutoDJ 24h`,
+            album: `${station.city}/${station.state}`,
+            artwork: station.logo ? [{ src: station.logo, sizes: "192x192", type: "image/jpeg" }] : []
+          });
+        } catch (e) {}
+      }
+
+      audioEl.onerror = () => {
+        // Se uma faixa falhar, pula para a próxima automaticamente
+        if (tracks.length > 1) {
+          playAutoDjStation(station, (autoDjCurrentTrackIndex + 1) % tracks.length, 0);
+        } else {
+          state.isPlaying = false;
+          syncPlayerPlayStateUI();
+          updatePlayerStatusBadge("Erro ao carregar MP3", "bg-red-950 text-red-300 border-red-700", "bg-red-500");
+        }
+      };
+
+      audioEl.onloadedmetadata = () => {
+        if (pos.offset > 2 && isFinite(audioEl.duration) && pos.offset < audioEl.duration - 2) {
+          try { audioEl.currentTime = pos.offset; } catch (e) {}
+        }
+      };
+
+      audioEl.onplaying = () => {
+        state.isPlaying = true;
+        syncPlayerPlayStateUI();
+        updatePlayerStatusBadge("AutoDJ 24h • No Ar", "bg-purple-950 text-purple-200 border-purple-500", "bg-emerald-400");
+      };
+
+      audioEl.onended = () => {
+        if (state.currentStationId === station.id) {
+          playAutoDjStation(station, (autoDjCurrentTrackIndex + 1) % tracks.length, 0);
+        }
+      };
+
+      audioEl.src = track.url;
+      audioEl.load();
+      audioEl.play().catch(() => {
+        updatePlayerStatusBadge("Toque em Play para ouvir", "bg-amber-950 text-amber-300 border-amber-700", "bg-amber-400");
+      });
+    }
+
+    function openAutoDjManagerModal() {
+      document.getElementById("autoDjModal").classList.remove("hidden");
+      renderAutoDjStationsList();
+      lucide.createIcons();
+    }
+
+    function closeAutoDjManagerModal() {
+      document.getElementById("autoDjModal").classList.add("hidden");
+    }
+
+    function openNewAutoDjStationForm(editStationId = "") {
+      const wrap = document.getElementById("autoDjStationFormWrap");
+      wrap.classList.remove("hidden");
+      document.getElementById("adj_editId").value = editStationId || "";
+
+      if (editStationId) {
+        const st = state.stations.find(s => s.id === editStationId);
+        if (st) {
+          document.getElementById("autoDjFormTitle").textContent = `Editar Rádio AutoDJ: ${st.name}`;
+          document.getElementById("adj_name").value = st.name || "";
+          document.getElementById("adj_segment").value = (st.segments || [])[0] || "";
+          document.getElementById("adj_city").value = st.city || "Bento Gonçalves";
+          document.getElementById("adj_state").value = st.state || "RS";
+          document.getElementById("adj_slogan").value = st.slogan || "";
+          return;
+        }
+      }
+      document.getElementById("autoDjFormTitle").textContent = "Nova Web Rádio AutoDJ 24h";
+      document.getElementById("adj_name").value = "";
+      document.getElementById("adj_segment").value = "";
+      document.getElementById("adj_city").value = "Bento Gonçalves";
+      document.getElementById("adj_state").value = "RS";
+      document.getElementById("adj_slogan").value = "";
+    }
+
+    async function saveAutoDjStationMeta() {
+      const editId = document.getElementById("adj_editId").value.trim();
+      const name = document.getElementById("adj_name").value.trim();
+      const seg = document.getElementById("adj_segment").value.trim() || "Eclética";
+      const city = document.getElementById("adj_city").value.trim() || "Bento Gonçalves";
+      const uf = (document.getElementById("adj_state").value.trim() || "RS").toUpperCase();
+      const slogan = document.getElementById("adj_slogan").value.trim() || `O melhor de ${seg} 24 horas no ar!`;
+
+      if (!name) {
+        showToast("Nome Obrigatório", "Digite o nome da sua web rádio.", "error");
+        return;
+      }
+
+      let station;
+      if (editId) {
+        station = state.stations.find(s => s.id === editId);
+        if (!station) return;
+        station.name = name;
+        station.segments = [seg];
+        station.city = city;
+        station.state = uf;
+        station.slogan = slogan;
+        station.stationType = "autodj";
+      } else {
+        station = normalizeStation({
+          id: "autodj_" + Date.now() + "_" + Math.floor(Math.random() * 999),
+          status: "ACTIVE",
+          stationType: "autodj",
+          applicantName: "Super Admin (AutoDJ 24h)",
+          applicantEmail: "admin@melhoresradios.com.br",
+          applicantRole: "Proprietário",
+          managementEmail: "admin@melhoresradios.com.br",
+          name,
+          frequency: "",
+          slogan,
+          website: "https://melhores-radios.netlify.app/",
+          country: "Brasil",
+          state: uf,
+          city,
+          logo: "/icons/icon-192.png",
+          streamPrimary: "autodj://playlist",
+          segments: [seg],
+          autodjTracks: [],
+          submittedAt: new Date().toLocaleString("pt-BR"),
+          listeners: 450
+        });
+        state.stations.unshift(station);
+      }
+
+      const ok = await saveStationRecord(station, false);
+      document.getElementById("autoDjStationFormWrap").classList.add("hidden");
+      renderAutoDjStationsList();
+      renderPublicStations();
+      if (state.adminUnlocked) renderAdminQueue();
+      if (ok) showToast("Rádio Salva!", `"${name}" pronta para receber seus arquivos MP3.`, "success");
+    }
+
+    async function createDefault5AutoDjStations() {
+      const defaults = [
+        { id: "autodj_sertanejo", name: "Melhores Rádios Sertanejo", seg: "Sertaneja", slogan: "Sertanejo universitário e modão 24h" },
+        { id: "autodj_flashback", name: "Melhores Rádios Flashback", seg: "Flashback", slogan: "Clássicos dos anos 70, 80 e 90 sem parar" },
+        { id: "autodj_gauchesca", name: "Melhores Rádios Gaúcha", seg: "Gauchesca", slogan: "Tradição e música gaúcha 24 horas" },
+        { id: "autodj_mpb", name: "Melhores Rádios MPB & Pop", seg: "MPB", slogan: "O melhor da MPB e Pop Nacional" },
+        { id: "autodj_gospel", name: "Melhores Rádios Gospel", seg: "Gospel", slogan: "Louvor e adoração 24 horas no ar" }
+      ];
+
+      let created = 0;
+      for (const item of defaults) {
+        if (state.stations.some(s => s.id === item.id)) continue;
+        const st = normalizeStation({
+          id: item.id,
+          status: "ACTIVE",
+          stationType: "autodj",
+          applicantName: "Super Admin (AutoDJ 24h)",
+          applicantEmail: "admin@melhoresradios.com.br",
+          applicantRole: "Proprietário",
+          managementEmail: "admin@melhoresradios.com.br",
+          name: item.name,
+          frequency: "",
+          slogan: item.slogan,
+          website: "https://melhores-radios.netlify.app/",
+          country: "Brasil",
+          state: "RS",
+          city: "Bento Gonçalves",
+          logo: "/icons/icon-192.png",
+          streamPrimary: "autodj://playlist",
+          segments: [item.seg],
+          autodjTracks: [],
+          submittedAt: new Date().toLocaleString("pt-BR"),
+          listeners: 500
+        });
+        state.stations.unshift(st);
+        const ok = await saveStationRecord(st, true);
+        if (ok) created++;
+      }
+
+      renderAutoDjStationsList();
+      renderPublicStations();
+      if (state.adminUnlocked) renderAdminQueue();
+      showToast(
+        created > 0 ? "5 Rádios Criadas!" : "Já Criadas",
+        created > 0 ? `${created} web rádios AutoDJ criadas! Agora clique em "Enviar MP3" em cada uma.` : "As 5 rádios modelo já existem na lista abaixo.",
+        "success"
+      );
+    }
+
+    function readLocalAudioDuration(file) {
+      return new Promise((resolve) => {
+        const tempAudio = document.createElement("audio");
+        const objUrl = URL.createObjectURL(file);
+        tempAudio.preload = "metadata";
+        tempAudio.onloadedmetadata = () => {
+          const dur = isFinite(tempAudio.duration) ? Math.round(tempAudio.duration) : 180;
+          URL.revokeObjectURL(objUrl);
+          resolve(dur);
+        };
+        tempAudio.onerror = () => {
+          URL.revokeObjectURL(objUrl);
+          resolve(180);
+        };
+        tempAudio.src = objUrl;
+      });
+    }
+
+    async function handleAutoDjMp3Upload(stationId, event) {
+      const files = Array.from(event.target.files || []);
+      event.target.value = "";
+      if (files.length === 0) return;
+      if (!supabaseClient) initSupabaseClient();
+      if (!supabaseClient) {
+        showToast("Sem Conexão", "Supabase não inicializado.", "error");
+        return;
+      }
+
+      const station = state.stations.find(s => s.id === stationId);
+      if (!station) return;
+      if (!Array.isArray(station.autodjTracks)) station.autodjTracks = [];
+
+      const statusEl = document.getElementById(`adj_upload_status_${stationId}`);
+      if (statusEl) {
+        statusEl.classList.remove("hidden");
+        statusEl.textContent = `Enviando 0 de ${files.length} arquivos MP3...`;
+      }
+
+      let okCount = 0;
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        try {
+          const duration = await readLocalAudioDuration(file);
+          const safeName = file.name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-zA-Z0-9._-]/g, "_");
+          const storagePath = `${stationId}/${Date.now()}_${safeName}`;
+
+          const { error: upErr } = await supabaseClient.storage
+            .from(AUTODJ_BUCKET)
+            .upload(storagePath, file, { contentType: file.type || "audio/mpeg", upsert: true });
+
+          if (upErr) throw upErr;
+
+          const { data: pubData } = supabaseClient.storage
+            .from(AUTODJ_BUCKET)
+            .getPublicUrl(storagePath);
+
+          const cleanTitle = file.name.replace(/\.(mp3|m4a|ogg|wav|aac)$/i, "").replace(/[_-]+/g, " ").trim();
+          station.autodjTracks.push({
+            id: "trk_" + Date.now() + "_" + i,
+            title: cleanTitle,
+            url: pubData.publicUrl,
+            storagePath,
+            duration
+          });
+          okCount++;
+          if (statusEl) statusEl.textContent = `Enviado ${okCount} de ${files.length}: ${cleanTitle}`;
+        } catch (err) {
+          console.error("Erro upload MP3:", err);
+          showToast(
+            "Erro ao Enviar MP3",
+            `Verifique se o bucket público "${AUTODJ_BUCKET}" foi criado no Supabase Storage com permissão de upload. (${err.message || "Erro"})`,
+            "error"
+          );
+          break;
+        }
+      }
+
+      if (okCount > 0) {
+        station.streamPrimary = station.autodjTracks[0].url;
+        await saveStationRecord(station, false);
+        showToast("Músicas no Ar!", `${okCount} MP3(s) adicionados ao AutoDJ de "${station.name}".`, "success");
+      }
+
+      if (statusEl) statusEl.classList.add("hidden");
+      renderAutoDjStationsList();
+      renderPublicStations();
+    }
+
+    async function removeAutoDjTrack(stationId, trackIndex) {
+      const station = state.stations.find(s => s.id === stationId);
+      if (!station || !Array.isArray(station.autodjTracks)) return;
+      const [removed] = station.autodjTracks.splice(trackIndex, 1);
+      if (removed?.storagePath && supabaseClient) {
+        try {
+          await supabaseClient.storage.from(AUTODJ_BUCKET).remove([removed.storagePath]);
+        } catch (e) {}
+      }
+      await saveStationRecord(station, true);
+      renderAutoDjStationsList();
+      showToast("Faixa Removida", `"${removed?.title || "Música"}" removida da playlist.`, "info");
+    }
+
+    function renderAutoDjStationsList() {
+      const container = document.getElementById("autoDjStationsList");
+      if (!container) return;
+      const list = state.stations.filter(s => s.stationType === "autodj");
+
+      if (list.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-8 text-xs text-slate-500 border border-dashed border-slate-300 rounded-2xl">
+            Nenhuma rádio AutoDJ criada ainda. Clique em <strong>+ Criar 5 Rádios Modelo</strong> acima para começar em 1 clique!
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = list.map(s => {
+        const tracks = Array.isArray(s.autodjTracks) ? s.autodjTracks : [];
+        const totalMin = Math.round(tracks.reduce((a, t) => a + (Number(t.duration) || 180), 0) / 60);
+        return `
+          <div class="rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-sm">
+            <div class="p-4 bg-slate-50 border-b border-slate-200 flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <div class="flex items-center gap-2">
+                  <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-purple-100 text-purple-900">AUTODJ 24H</span>
+                  <h4 class="font-extrabold text-sm text-slate-900">${s.name}</h4>
+                </div>
+                <p class="text-[11px] text-slate-500 mt-0.5">${(s.segments || []).join(", ")} • ${s.city}/${s.state} • <strong>${tracks.length} música(s)</strong> (${totalMin} min de programação)</p>
+              </div>
+              <div class="flex flex-wrap items-center gap-2">
+                <label class="cursor-pointer inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold shadow-sm">
+                  <i data-lucide="upload" class="w-3.5 h-3.5"></i>
+                  <span>Enviar MP3</span>
+                  <input type="file" accept=".mp3,audio/mpeg,audio/*" multiple onchange="handleAutoDjMp3Upload('${s.id}', event)" class="hidden" />
+                </label>
+                <button type="button" onclick="playStation('${s.id}')" class="px-3 py-2 rounded-xl bg-navy-900 hover:bg-navy-800 text-cyan-300 text-xs font-bold">
+                  ▶ Ouvir
+                </button>
+                <button type="button" onclick="openNewAutoDjStationForm('${s.id}')" class="px-3 py-2 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs font-bold">
+                  Editar
+                </button>
+              </div>
+            </div>
+
+            <div id="adj_upload_status_${s.id}" class="hidden px-4 py-2 bg-cyan-50 text-cyan-900 text-xs font-bold border-b border-cyan-100"></div>
+
+            <div class="p-3 max-h-44 overflow-y-auto divide-y divide-slate-100 text-xs">
+              ${tracks.length === 0
+                ? `<p class="text-slate-400 text-center py-3">Nenhuma música enviada ainda — clique em <strong>Enviar MP3</strong> acima para subir músicas desta rádio.</p>`
+                : tracks.map((t, idx) => `
+                    <div class="py-1.5 flex items-center justify-between gap-2">
+                      <span class="truncate text-slate-700"><strong>${idx + 1}.</strong> ${t.title} <span class="text-slate-400">(${Math.floor((t.duration || 180)/60)}:${String((t.duration || 180)%60).padStart(2,'0')})</span></span>
+                      <button type="button" onclick="removeAutoDjTrack('${s.id}', ${idx})" class="text-red-500 hover:text-red-700 font-bold shrink-0 px-2">Remover</button>
+                    </div>
+                  `).join("")
+              }
+            </div>
+          </div>
+        `;
+      }).join("");
+      lucide.createIcons();
     }
 
     window.addEventListener("DOMContentLoaded", async () => {
