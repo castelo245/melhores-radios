@@ -1096,7 +1096,16 @@
 
       <!-- Filters -->
       <div class="p-4 sm:p-5 border-b border-slate-200 bg-slate-50 space-y-3 shrink-0">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 text-xs">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3 text-xs">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Ordenação / Lista</label>
+            <select id="rb_order" onchange="resetRadioBrowserPage()" class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white font-semibold">
+              <option value="clickcount" selected>Mais Ouvidas (Cliques)</option>
+              <option value="recent">Recém-cadastradas</option>
+              <option value="votes">Mais Votadas</option>
+              <option value="name">Ordem Alfabética (A-Z)</option>
+            </select>
+          </div>
           <div>
             <label class="block font-bold text-slate-700 mb-1">País</label>
             <select id="rb_country" onchange="resetRadioBrowserPage()" class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white font-semibold">
@@ -1464,12 +1473,24 @@
         if (state.publicTab === "brasil") {
           req = req.ilike("country", "brasil");
           if (state.selectedStateFilter) req = req.eq("state", state.selectedStateFilter);
-          if (state.selectedCityFilter) req = req.ilike("city", state.selectedCityFilter);
+          if (state.selectedCityFilter) req = req.ilike("city", `%${state.selectedCityFilter}%`);
         } else if (state.publicTab === "mundiais") {
-          if (state.selectedCountryFilter) req = req.ilike("country", state.selectedCountryFilter);
+          if (state.selectedCountryFilter) {
+            const cAliases = getCountrySearchAliases(state.selectedCountryFilter);
+            if (cAliases.length > 1) {
+              req = req.or(cAliases.map(a => `country.ilike.%${a.replace(/[,()%]/g, " ").trim()}%`).join(","));
+            } else {
+              req = req.ilike("country", `%${state.selectedCountryFilter}%`);
+            }
+          }
         } else if (state.publicTab === "segmento") {
           if (state.selectedSegmentFilter) {
-            req = req.contains("payload", { segments: [state.selectedSegmentFilter] });
+            const segAliases = getSegmentSearchAliases(state.selectedSegmentFilter);
+            const segConditions = segAliases.map(term => {
+              const safeT = term.replace(/[,()%"]/g, " ").trim();
+              return `payload->>segments.ilike.%${safeT}%`;
+            });
+            req = req.or(segConditions.join(","));
           }
         } else if (state.publicTab === "favoritos") {
           req = req.in("id", state.favorites);
@@ -1810,10 +1831,180 @@
     ];
 
     const COUNTRIES = [
-      "Brasil", "Portugal", "Estados Unidos", "Argentina", "Espanha", "França", "Reino Unido",
-      "Itália", "Alemanha", "Japão", "Canadá", "Chile", "Uruguai", "Paraguai", "Colômbia",
-      "México", "Angola", "Moçambique", "Suíça", "Austrália"
+      "Afeganistão", "África do Sul", "Albânia", "Alemanha", "Andorra", "Angola", "Antígua e Barbuda",
+      "Arábia Saudita", "Argélia", "Argentina", "Armênia", "Austrália", "Áustria", "Azerbaijão",
+      "Bahamas", "Bangladesh", "Barbados", "Bahrein", "Bélgica", "Belize", "Benin", "Bielorrússia",
+      "Bolívia", "Bósnia e Herzegovina", "Botsuana", "Brasil", "Brunei", "Bulgária", "Burquina Faso",
+      "Burundi", "Butão", "Cabo Verde", "Camarões", "Camboja", "Canadá", "Catar", "Cazaquistão",
+      "Chade", "Chile", "China", "Chipre", "Colômbia", "Comores", "Congo", "Coreia do Norte",
+      "Coreia do Sul", "Costa do Marfim", "Costa Rica", "Croácia", "Cuba", "Dinamarca", "Djibuti",
+      "Dominica", "Egito", "El Salvador", "Emirados Árabes Unidos", "Equador", "Eritreia",
+      "Eslováquia", "Eslovênia", "Espanha", "Estados Unidos", "Estônia", "Eswatini", "Etiópia",
+      "Fiji", "Filipinas", "Finlândia", "França", "Gabão", "Gâmbia", "Gana", "Geórgia", "Granada",
+      "Grécia", "Guatemala", "Guiana", "Guiné", "Guiné Equatorial", "Guiné-Bissau", "Haiti",
+      "Honduras", "Hungria", "Iêmen", "Ilhas Marshall", "Ilhas Salomão", "Índia", "Indonésia",
+      "Irã", "Iraque", "Irlanda", "Islândia", "Israel", "Itália", "Jamaica", "Japão", "Jordânia",
+      "Kiribati", "Kosovo", "Kuwait", "Laos", "Lesoto", "Letônia", "Líbano", "Libéria", "Líbia",
+      "Liechtenstein", "Lituânia", "Luxemburgo", "Macedônia do Norte", "Madagascar", "Malásia",
+      "Malaui", "Maldivas", "Mali", "Malta", "Marrocos", "Maurício", "Mauritânia", "México",
+      "Mianmar", "Micronésia", "Moçambique", "Moldávia", "Mônaco", "Mongólia", "Montenegro",
+      "Namíbia", "Nauru", "Nepal", "Nicarágua", "Níger", "Nigéria", "Noruega", "Nova Zelândia",
+      "Omã", "Países Baixos", "Palau", "Palestina", "Panamá", "Papua-Nova Guiné", "Paquistão",
+      "Paraguai", "Peru", "Polônia", "Porto Rico", "Portugal", "Quênia", "Quirguistão",
+      "Reino Unido", "República Centro-Africana", "República Checa", "República Democrática do Congo",
+      "República Dominicana", "Romênia", "Ruanda", "Rússia", "Samoa", "San Marino",
+      "Santa Lúcia", "São Cristóvão e Neves", "São Marinho", "São Tomé e Príncipe",
+      "São Vicente e Granadinas", "Seicheles", "Senegal", "Serra Leoa", "Sérvia", "Singapura",
+      "Síria", "Somália", "Sri Lanka", "Sudão", "Sudão do Sul", "Suécia", "Suíça", "Suriname",
+      "Tailândia", "Taiwan", "Tajiquistão", "Tanzânia", "Timor-Leste", "Togo", "Tonga",
+      "Trinidad e Tobago", "Tunísia", "Turcomenistão", "Turquia", "Tuvalu", "Ucrânia", "Uganda",
+      "Uruguai", "Uzbequistão", "Vanuatu", "Vaticano", "Venezuela", "Vietnã", "Zâmbia", "Zimbábue"
     ];
+
+    const COUNTRY_PT_TO_ALIASES = {
+      "Estados Unidos": ["Estados Unidos", "United States", "United States of America", "USA"],
+      "Reino Unido": ["Reino Unido", "United Kingdom", "UK", "England", "Great Britain"],
+      "Alemanha": ["Alemanha", "Germany", "Deutschland"],
+      "França": ["França", "France"],
+      "Espanha": ["Espanha", "Spain", "España"],
+      "Itália": ["Itália", "Italy", "Italia"],
+      "Japão": ["Japão", "Japan"],
+      "Canadá": ["Canadá", "Canada"],
+      "Suíça": ["Suíça", "Switzerland", "Suisse"],
+      "Austrália": ["Austrália", "Australia"],
+      "Áustria": ["Áustria", "Austria"],
+      "Bélgica": ["Bélgica", "Belgium", "Belgique"],
+      "Países Baixos": ["Países Baixos", "Netherlands", "Holland"],
+      "Rússia": ["Rússia", "Russia", "Russian Federation"],
+      "Polônia": ["Polônia", "Poland", "Polska"],
+      "Grécia": ["Grécia", "Greece"],
+      "Turquia": ["Turquia", "Turkey", "Türkiye"],
+      "Índia": ["Índia", "India"],
+      "China": ["China"],
+      "Coreia do Sul": ["Coreia do Sul", "South Korea", "Korea, Republic of"],
+      "México": ["México", "Mexico"],
+      "Colômbia": ["Colômbia", "Colombia"],
+      "República Dominicana": ["República Dominicana", "Dominican Republic"],
+      "Porto Rico": ["Porto Rico", "Puerto Rico"],
+      "África do Sul": ["África do Sul", "South Africa"],
+      "Moçambique": ["Moçambique", "Mozambique"],
+      "Cabo Verde": ["Cabo Verde", "Cape Verde"],
+      "Guiné-Bissau": ["Guiné-Bissau", "Guinea-Bissau"],
+      "São Tomé e Príncipe": ["São Tomé e Príncipe", "Sao Tome and Principe"],
+      "Timor-Leste": ["Timor-Leste", "East Timor"],
+      "Nova Zelândia": ["Nova Zelândia", "New Zealand"],
+      "Irlanda": ["Irlanda", "Ireland"],
+      "Suécia": ["Suécia", "Sweden"],
+      "Noruega": ["Noruega", "Norway"],
+      "Dinamarca": ["Dinamarca", "Denmark"],
+      "Finlândia": ["Finlândia", "Finland"],
+      "Ucrânia": ["Ucrânia", "Ukraine"],
+      "Romênia": ["Romênia", "Romania"],
+      "Hungria": ["Hungria", "Hungary"],
+      "República Checa": ["República Checa", "Czech Republic", "Czechia"]
+    };
+
+    const SEGMENT_ALIASES = {
+      "Sertaneja": ["Sertaneja", "Sertanejo"],
+      "Sertanejo Raiz": ["Sertanejo Raiz", "Sertanejo"],
+      "Noticiários": ["Noticiários", "Notícias", "News", "Talk News", "Jornalismo"],
+      "Jornalismo(all news)": ["Jornalismo", "News", "Notícias", "Noticiários"],
+      "Gauchesca": ["Gauchesca", "Gaúcha", "Gaucha"],
+      "Samba Pagode": ["Samba Pagode", "Samba", "Pagode"],
+      "Católica": ["Católica", "Catolica", "Catholic"],
+      "Evangélica": ["Evangélica", "Gospel", "Christian"],
+      "Gospel": ["Gospel", "Christian", "Católica"],
+      "Românticas": ["Românticas", "Romanticas", "Love Songs", "Romântica"],
+      "Eclética": ["Eclética", "Ecletica", "Variety", "Hits"],
+      "Flashback": ["Flashback", "Oldies", "Classic Hits", "Anos 80", "Anos 90"],
+      "Eletrônica": ["Eletrônica", "Dance", "Techno", "Trance", "House"],
+      "Esportes": ["Esportes", "Sports", "Futebol"]
+    };
+
+    let allAvailableCountries = [...COUNTRIES];
+    let countryFilterSearchText = "";
+    let segmentFilterSearchText = "";
+
+    function getCountrySearchAliases(countryName) {
+      if (!countryName) return [];
+      const exact = COUNTRY_PT_TO_ALIASES[countryName];
+      if (exact) return exact;
+      return [countryName];
+    }
+
+    function getSegmentSearchAliases(segName) {
+      if (!segName) return [];
+      const exact = SEGMENT_ALIASES[segName];
+      if (exact) return exact;
+      return [segName];
+    }
+
+    async function loadAllWorldCountriesFromApi() {
+      const merged = new Set(COUNTRIES);
+      for (const st of state.stations) {
+        if (st.country && st.country.trim()) merged.add(st.country.trim());
+      }
+      for (const base of RADIO_BROWSER_MIRRORS) {
+        try {
+          const resp = await fetch(`${base}/json/countries`, { headers: { "Accept": "application/json" } });
+          if (!resp.ok) continue;
+          const data = await resp.json();
+          if (Array.isArray(data) && data.length > 0) {
+            for (const item of data) {
+              const cc = (item.iso_3166_1 || "").trim().toUpperCase();
+              const ptName = COUNTRY_CODE_TO_PT[cc];
+              if (ptName) merged.add(ptName);
+              else if (item.name && item.name.trim()) merged.add(item.name.trim());
+            }
+            break;
+          }
+        } catch (e) {}
+      }
+      allAvailableCountries = Array.from(merged).sort((a, b) => a.localeCompare(b, "pt-BR"));
+      if (state.publicTab === "mundiais") renderSubFilterArea();
+      populateRadioBrowserCountrySelect();
+    }
+
+    function populateRadioBrowserCountrySelect() {
+      const sel = document.getElementById("rb_country");
+      if (!sel) return;
+      const currentVal = sel.value || "BR";
+      const priorityCodes = [
+        ["BR", "Brasil (BR)"],
+        ["PT", "Portugal (PT)"],
+        ["US", "Estados Unidos (US)"],
+        ["AR", "Argentina (AR)"],
+        ["ES", "Espanha (ES)"],
+        ["FR", "França (FR)"],
+        ["IT", "Itália (IT)"],
+        ["GB", "Reino Unido (GB)"],
+        ["DE", "Alemanha (DE)"],
+        ["JP", "Japão (JP)"],
+        ["CA", "Canadá (CA)"],
+        ["CL", "Chile (CL)"],
+        ["UY", "Uruguai (UY)"],
+        ["PY", "Paraguai (PY)"],
+        ["CO", "Colômbia (CO)"],
+        ["MX", "México (MX)"],
+        ["AO", "Angola (AO)"],
+        ["MZ", "Moçambique (MZ)"],
+        ["CH", "Suíça (CH)"],
+        ["AU", "Austrália (AU)"]
+      ];
+      const usedCodes = new Set(priorityCodes.map(x => x[0]));
+      const extraOptions = Object.entries(COUNTRY_CODE_TO_PT)
+        .filter(([code]) => !usedCodes.has(code))
+        .sort((a, b) => a[1].localeCompare(b[1], "pt-BR"))
+        .map(([code, name]) => `<option value="${code}">${name} (${code})</option>`)
+        .join("");
+
+      sel.innerHTML = `
+        <option value="">Todos os Países (Mundial)</option>
+        ${priorityCodes.map(([c, label]) => `<option value="${c}">${label}</option>`).join("")}
+        ${extraOptions}
+      `;
+      sel.value = currentVal;
+    }
 
     const STORAGE_KEY_STATIONS = "melhores_radios_db_v2";
     const STORAGE_KEY_FAVS = "melhores_radios_favs_v2";
@@ -2306,24 +2497,40 @@
         `;
       } else if (state.publicTab === "mundiais") {
         area.classList.remove("hidden");
+        const qCountry = countryFilterSearchText.trim().toLowerCase();
+        const filteredCountries = allAvailableCountries.filter(c => !qCountry || c.toLowerCase().includes(qCountry));
         area.innerHTML = `
-          <div class="max-w-sm">
-            <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Selecionar País</label>
-            <select onchange="state.selectedCountryFilter=this.value; fetchPublicPage(true);" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold bg-slate-50">
-              <option value="">Todos os Países</option>
-              ${COUNTRIES.map(c => `<option value="${c}" ${state.selectedCountryFilter === c ? "selected" : ""}>${c}</option>`).join("")}
-            </select>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-2xl">
+            <div>
+              <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Buscar País (${allAvailableCountries.length} países)</label>
+              <input type="text" value="${countryFilterSearchText.replace(/"/g, "&quot;")}" oninput="countryFilterSearchText=this.value; renderSubFilterArea();" placeholder="Digite o nome do país (ex: Portugal, Japão, Chile...)" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold bg-slate-50" />
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Selecionar País</label>
+              <select onchange="state.selectedCountryFilter=this.value; fetchPublicPage(true);" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold bg-slate-50">
+                <option value="">Todos os Países (${allAvailableCountries.length})</option>
+                ${filteredCountries.map(c => `<option value="${c}" ${state.selectedCountryFilter === c ? "selected" : ""}>${c}</option>`).join("")}
+              </select>
+            </div>
           </div>
         `;
       } else if (state.publicTab === "segmento") {
         area.classList.remove("hidden");
+        const qSeg = segmentFilterSearchText.trim().toLowerCase();
+        const filteredSegs = ALL_SEGMENTS.filter(seg => !qSeg || seg.toLowerCase().includes(qSeg));
         area.innerHTML = `
-          <div class="max-w-md">
-            <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Selecionar Segmento Musical / Jornalístico</label>
-            <select onchange="state.selectedSegmentFilter=this.value; fetchPublicPage(true);" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold bg-slate-50">
-              <option value="">Todos os Segmentos (${ALL_SEGMENTS.length})</option>
-              ${ALL_SEGMENTS.map(seg => `<option value="${seg}" ${state.selectedSegmentFilter === seg ? "selected" : ""}>${seg}</option>`).join("")}
-            </select>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-2xl">
+            <div>
+              <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Filtrar Lista de Segmentos</label>
+              <input type="text" value="${segmentFilterSearchText.replace(/"/g, "&quot;")}" oninput="segmentFilterSearchText=this.value; renderSubFilterArea();" placeholder="Digite o estilo (ex: Sertaneja, Rock, Gospel, Noticiários...)" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold bg-slate-50" />
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Selecionar Segmento Musical / Jornalístico</label>
+              <select onchange="state.selectedSegmentFilter=this.value; fetchPublicPage(true);" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold bg-slate-50">
+                <option value="">Todos os Segmentos (${ALL_SEGMENTS.length})</option>
+                ${filteredSegs.map(seg => `<option value="${seg}" ${state.selectedSegmentFilter === seg ? "selected" : ""}>${seg}</option>`).join("")}
+              </select>
+            </div>
           </div>
         `;
       } else {
@@ -2347,6 +2554,8 @@
       state.selectedCityFilter = "";
       state.selectedCountryFilter = "";
       state.selectedSegmentFilter = "";
+      countryFilterSearchText = "";
+      segmentFilterSearchText = "";
       setPublicTab("top");
     }
 
@@ -3421,11 +3630,12 @@
       });
     }
 
-    async function fetchFromRadioBrowserWithFallback(queryString) {
+    async function fetchFromRadioBrowserWithFallback(queryString, endpointPath = "/json/stations/search") {
       let lastErr = null;
       for (const base of RADIO_BROWSER_MIRRORS) {
         try {
-          const resp = await fetch(`${base}/json/stations/search?${queryString}`, {
+          const url = queryString ? `${base}${endpointPath}?${queryString}` : `${base}${endpointPath}`;
+          const resp = await fetch(url, {
             headers: { "Accept": "application/json" }
           });
           if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
@@ -3441,6 +3651,7 @@
     async function searchRadioBrowserStations() {
       const btn = document.getElementById("rb_searchBtn");
       const container = document.getElementById("rb_resultsContainer");
+      const orderMode = document.getElementById("rb_order")?.value || "clickcount";
       const cc = document.getElementById("rb_country").value;
       const stateFilter = document.getElementById("rb_state").value.trim();
       const tagFilter = document.getElementById("rb_tag").value.trim();
@@ -3459,18 +3670,49 @@
         const batchWindow = 300;
         const offsetVal = (pageNum - 1) * batchWindow;
 
-        const params = new URLSearchParams({
-          hidebroken: "true",
-          order: "clickcount",
-          reverse: "true",
-          offset: String(offsetVal),
-          limit: String(batchWindow)
-        });
-        if (cc) params.set("countrycode", cc);
-        if (stateFilter) params.set("state", stateFilter);
-        if (tagFilter) params.set("tag", tagFilter.toLowerCase());
+        let rawList = [];
+        if (orderMode === "recent") {
+          const params = new URLSearchParams({
+            hidebroken: "true",
+            order: "changetimestamp",
+            reverse: "true",
+            offset: String(offsetVal),
+            limit: String(batchWindow)
+          });
+          if (cc) params.set("countrycode", cc);
+          if (stateFilter) params.set("state", stateFilter);
+          if (tagFilter) params.set("tag", tagFilter.toLowerCase());
 
-        const rawList = await fetchFromRadioBrowserWithFallback(params.toString());
+          rawList = await fetchFromRadioBrowserWithFallback(params.toString(), "/json/stations/search");
+
+          // Fallback para o endpoint /json/stations/lastchange caso changetimestamp venha vazio
+          if (!Array.isArray(rawList) || rawList.length === 0) {
+            const recentParams = new URLSearchParams({
+              offset: String(offsetVal),
+              limit: String(batchWindow)
+            });
+            const lastChanged = await fetchFromRadioBrowserWithFallback(recentParams.toString(), "/json/stations/lastchange");
+            rawList = (lastChanged || []).filter(item => {
+              if (cc && (item.countrycode || "").toUpperCase() !== cc.toUpperCase()) return false;
+              if (stateFilter && !(item.state || "").toLowerCase().includes(stateFilter.toLowerCase())) return false;
+              if (tagFilter && !(item.tags || "").toLowerCase().includes(tagFilter.toLowerCase())) return false;
+              return true;
+            });
+          }
+        } else {
+          const params = new URLSearchParams({
+            hidebroken: "true",
+            order: orderMode,
+            reverse: orderMode === "name" ? "false" : "true",
+            offset: String(offsetVal),
+            limit: String(batchWindow)
+          });
+          if (cc) params.set("countrycode", cc);
+          if (stateFilter) params.set("state", stateFilter);
+          if (tagFilter) params.set("tag", tagFilter.toLowerCase());
+
+          rawList = await fetchFromRadioBrowserWithFallback(params.toString(), "/json/stations/search");
+        }
 
         const existingIds = new Set(state.stations.map(s => s.id));
         const existingStreams = new Set(state.stations.map(s => (s.streamPrimary || "").trim().toLowerCase()));
@@ -4086,6 +4328,7 @@
       }
       lucide.createIcons();
 
+      loadAllWorldCountriesFromApi();
       if (cloudReady) {
         await fetchPublicPage(true, false);
         fetchAdminKPIsFromCloud();
